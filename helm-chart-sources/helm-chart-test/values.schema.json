@@ -122,10 +122,20 @@
                     "type": "array",
                     "title": "Define Ports",
                     "description": "Define the adapter Ports",
-					"default": [],
                     "items": {
                         "$id": "#/properties/storageSecurity/properties/ports/items",
                         "type": "object",
+                        "additionalItems": true
+                    }
+                },
+				 "check": {
+                    "$id": "#/properties/storageSecurity/properties/check",
+                    "type": "array",
+                    "title": "The check",
+                    "description": "Define GID for supplemental Groups.",
+                    "items": {
+                        "$id": "#/properties/storageSecurity/properties/check/items",
+                        "type": "string",
                         "additionalItems": true
                     }
                 }
@@ -137,7 +147,8 @@
             "title": "Service Configuration",
             "required": [
                 "type",
-                "port"
+                "port",
+				"annotations"
             ],
             "properties": {
                 "type": {
@@ -159,7 +170,15 @@
 					"description": "Specify the port number.",
 					"default": ""
                 }
-             }
+             },
+			 "annotations": {
+                    "$id": "#/properties/service/properties/annotations",
+                    "type": "object",
+                    "title": "Service Annotations",
+                    "description": "Specify the Service annotations if needed.",
+                    "default": {},
+                    "additionalProperties": true
+            }
         },
         "secret": {
             "$id": "#/properties/secret",

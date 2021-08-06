@@ -20,6 +20,7 @@ storageSecurity:
     - name: adapter1
       value: 2002-2010
   ports: []
+  check: ["durgesh"]
   
 serviceAccount:
   # Specifies whether a service account should be created
@@ -32,6 +33,7 @@ serviceAccount:
 service:
   type: ClusterIP
   port: 80
+  annotations: {}
 
 secret:
   secretName: "test-secret"
