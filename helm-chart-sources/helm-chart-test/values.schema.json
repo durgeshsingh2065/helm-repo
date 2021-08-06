@@ -114,6 +114,10 @@
                     "items": {
                         "$id": "#/properties/storageSecurity/properties/portRange/items",
                         "type": "object",
+						"properties": {
+							"name": { "type": "string" },
+							"value": { "type": "string" }
+						},
                         "additionalItems": true
                     }
                 },
