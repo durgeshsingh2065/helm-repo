@@ -90,17 +90,6 @@
                 }
             }
         },
-		"portRange": {
-            "$id": "#/properties/portRange",
-            "type": "Object",
-            "title": "Port Range",
-            "description": "Port Range for Adapters",
-            "default": [],
-            "additionalProperties": {
-			    "type": "string",
-                "description": "string values"
-            }
-        },
         "extraProps": {
             "$id": "#/properties/extraProps",
             "type": "array",
@@ -109,6 +98,7 @@
             "default": [],
             "items": {
                 "$id": "#/properties/extraProps/items",
+				"type": "object", 
                 "additionalProperties": true
             }
         },
@@ -155,32 +145,6 @@
 					"$id": "#/properties/service/properties/port",
 					"type": ["integer", "null"],
 					"title": "Port",
-					"description": "Specify the port number.",
-					"default": ""
-                }
-             }
-        },
-		"service2": {
-            "$id": "#/properties/service2",
-            "type": "object",
-            "title": "Service2 Configuration",
-            "required": [
-                "externalIP",
-                "portRanges",
-				"ports"
-            ],
-            "properties": {
-                "externalIP": {
-                    "$id": "#/properties/service2/properties/externalIP",
-                    "type": "string",
-                    "title": "External IP",
-                    "description": "Specify the External IP expose the application",
-                    "default": ""
-                },
-                "port": {
-					"$id": "#/properties/service2/properties/portRanges",
-					"type": ["integer", "null"],
-					"title": "API Port",
 					"description": "Specify the port number.",
 					"default": ""
                 }
