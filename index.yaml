@@ -2,8 +2,32 @@ apiVersion: v1
 entries:
   helm-chart-test:
   - apiVersion: v2
+    appVersion: "1.5"
+    created: "2021-08-06T07:13:39.852777982Z"
+    description: |-
+      A Helm chart example.
+      Documentation
+      For additional details regarding install parameters check Helm Chart documentation at https://github.com/durgeshsingh2065/helm-repo
+      License
+      By installing this product you accept the following license terms: https://github.com/durgeshsingh2065/helm-repo
+    digest: b378e559f15f89e0d6d7764f4dc95c29c235e7c7a6fe0ad5cfb370db52647398
+    home: https://github.com/durgeshsingh2065/helm-repo
+    icon: https://durgeshsingh2065github.io/helm-chart/test.png
+    keywords:
+    - amd64
+    - RHOCP
+    - Other
+    kubeVersion: '>=1.19.0'
+    maintainers:
+    - name: Durgesh
+    name: helm-chart-test
+    type: application
+    urls:
+    - https://durgeshsingh2065.github.io/helm-repo/helm-chart-test-1.0.5.tgz
+    version: 1.0.5
+  - apiVersion: v2
     appVersion: "1.4"
-    created: "2021-08-06T07:05:21.706515445Z"
+    created: "2021-08-06T07:13:39.8521766Z"
     description: |-
       A Helm chart example.
       Documentation
@@ -27,7 +51,7 @@ entries:
     version: 1.0.4
   - apiVersion: v2
     appVersion: "1.3"
-    created: "2021-08-06T07:05:21.705719115Z"
+    created: "2021-08-06T07:13:39.851635467Z"
     description: |-
       A Helm chart example.
       Documentation
@@ -51,7 +75,7 @@ entries:
     version: 1.0.3
   - apiVersion: v2
     appVersion: "1.1"
-    created: "2021-08-06T07:05:21.704939002Z"
+    created: "2021-08-06T07:13:39.851089577Z"
     description: |-
       A Helm chart example.
       Documentation
@@ -75,7 +99,7 @@ entries:
     version: 1.0.1
   - apiVersion: v2
     appVersion: "1"
-    created: "2021-08-06T07:05:21.703662831Z"
+    created: "2021-08-06T07:13:39.850487038Z"
     description: |-
       A Helm chart example.
       Documentation
@@ -97,4 +121,4 @@ entries:
     urls:
     - https://durgeshsingh2065.github.io/helm-repo/helm-chart-test-1.0.0.tgz
     version: 1.0.0
-generated: "2021-08-06T07:05:21.702771522Z"
+generated: "2021-08-06T07:13:39.849561163Z"

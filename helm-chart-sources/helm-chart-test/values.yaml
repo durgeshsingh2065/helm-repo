@@ -16,7 +16,10 @@ image:
    
 storageSecurity:
   supplementalGroups: [1000]
-  portRange: []
+  portRange:
+    - name: adapter1
+      value: 2002-2010
+  ports: []
   
 serviceAccount:
   # Specifies whether a service account should be created

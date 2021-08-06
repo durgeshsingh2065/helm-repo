@@ -116,6 +116,18 @@
                         "type": "object",
                         "additionalItems": true
                     }
+                },
+				"ports": {
+                    "$id": "#/properties/storageSecurity/properties/ports",
+                    "type": "array",
+                    "title": "Define Ports",
+                    "description": "Define the adapter Ports",
+					"default": [],
+                    "items": {
+                        "$id": "#/properties/storageSecurity/properties/ports/items",
+                        "type": "object",
+                        "additionalItems": true
+                    }
                 }
             }
         },
