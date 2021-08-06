@@ -3,7 +3,7 @@ entries:
   helm-chart-test:
   - apiVersion: v2
     appVersion: "1"
-    created: "2021-08-06T04:36:11.707231592Z"
+    created: "2021-08-06T04:46:52.197810306Z"
     description: |-
       A Helm chart example.
       Documentation
@@ -25,4 +25,4 @@ entries:
     urls:
     - https://durgeshsingh2065.github.io/helm-repo/helm-chart-test-1.0.0.tgz
     version: 1.0.0
-generated: "2021-08-06T04:36:11.705458994Z"
+generated: "2021-08-06T04:46:52.196494455Z"
