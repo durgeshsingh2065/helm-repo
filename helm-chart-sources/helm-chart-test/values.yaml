@@ -13,13 +13,10 @@ image:
   # Overrides the image tag whose default is the chart appVersion.
   tag: "1.0"
 
-
-extraProps: []
-  #- name: adapter1
-   # value: "1001-2001"
    
 storageSecurity:
   supplementalGroups: [1000]
+  portRange: []
   
 serviceAccount:
   # Specifies whether a service account should be created

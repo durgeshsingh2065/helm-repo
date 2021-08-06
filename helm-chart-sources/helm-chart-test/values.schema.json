@@ -90,18 +90,6 @@
                 }
             }
         },
-        "extraProps": {
-            "$id": "#/properties/extraProps",
-            "type": "array",
-            "title": "Extra Props Name",
-            "description": "Extra props name for general purposes",
-            "default": [],
-            "items": {
-                "$id": "#/properties/extraProps/items",
-				"type": "object", 
-                "additionalProperties": true
-            }
-        },
         "storageSecurity": {
             "$id": "#/properties/storageSecurity",
             "type": "object",
@@ -110,11 +98,22 @@
                 "supplementalGroups": {
                     "$id": "#/properties/storageSecurity/properties/supplementalGroups",
                     "type": "array",
-                    "title": "The supplementalGroups schema",
-                    "description": "An explanation about the purpose of this instance.",
+                    "title": "The supplementalGroups",
+                    "description": "Define GID for supplemental Groups.",
                     "items": {
                         "$id": "#/properties/storageSecurity/properties/supplementalGroups/items",
                         "type": "integer",
+                        "additionalItems": true
+                    }
+                },
+				"portRange": {
+                    "$id": "#/properties/storageSecurity/properties/portRange",
+                    "type": "array",
+                    "title": "Define port range",
+                    "description": "Define the adapter port range",
+                    "items": {
+                        "$id": "#/properties/storageSecurity/properties/portRange/items",
+                        "type": "object",
                         "additionalItems": true
                     }
                 }
