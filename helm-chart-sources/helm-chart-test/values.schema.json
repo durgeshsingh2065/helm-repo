@@ -181,7 +181,10 @@
                     "title": "Service Annotations",
                     "description": "Specify the Service annotations if needed.",
                     "default": {},
-                    "additionalProperties": true
+                    "additionalProperties": { 
+					    "type": "string",
+						"additionalItems": true
+				    }
             }
         },
         "secret": {
