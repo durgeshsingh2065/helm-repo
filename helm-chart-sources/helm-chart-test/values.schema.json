@@ -123,7 +123,7 @@
                 },
 				"ports": {
                     "$id": "#/properties/storageSecurity/properties/ports",
-                    "type": "array",
+                    "type": "object",
                     "title": "Define Ports",
                     "description": "Define the adapter Ports",
                     "items": {
@@ -174,6 +174,7 @@
 					"description": "Specify the port number.",
 					"default": ""
                 },
+				
 				"annotations": {
                     "$id": "#/properties/service/properties/annotations",
                     "type": "object",
@@ -184,6 +185,13 @@
 					    "type": "string",
 						"additionalItems": true
 				    }
+				},
+				"annotations1": {
+                    "$id": "#/properties/service/properties/annotations1",
+                    "type": "object",
+                    "title": "Service Annotations1",
+                    "description": "Specify the Service annotations1 if needed.",
+                    "additionalProperties": true
 				}
              }
         },
