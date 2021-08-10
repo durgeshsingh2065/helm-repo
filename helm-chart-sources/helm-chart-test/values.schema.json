@@ -128,7 +128,7 @@
 		"cmArgs": {
             "$id": "#/properties/cmArgs",
             "type": "object",
-            "title": "The cmArgs schema",
+            "title": "CM Configuration Parameters",
 			"default": {},
             "required": [
                 "keyCertExport",
@@ -162,7 +162,7 @@
         "persistentVolume": {
             "$id": "#/properties/persistentVolume",
             "type": "object",
-            "title": "PV/PVC Configuration",
+            "title": "PV and PVC Configuration",
             "default": {},
             "required": [
                 "enabled",
@@ -235,13 +235,13 @@
         "storageSecurity": {
             "$id": "#/properties/storageSecurity",
             "type": "object",
-            "title": "File System GID",
+            "title": "File System GID - Container Supplemental Group",
             "default": {},
             "properties": {
                 "supplementalGroupId": {
                     "$id": "#/properties/storageSecurity/properties/supplementalGroupId",
                     "type": "string",
-                    "title": "Supplemental group ID",
+                    "title": "Container Supplemental Group ID",
                     "description": "Specify the file system group ID for persistent volume.",
                     "default": ""
                 }
@@ -372,7 +372,7 @@
                 "secretName": {
                     "$id": "#/properties/secret/properties/secretName",
                     "type": "string",
-                    "title": "CM secret",
+                    "title": "CM Secret Name",
                     "description": "Specify the secret name which is created as prerequisite for this deployment.",
                     "default": ""
                 },
@@ -380,7 +380,7 @@
                     "$id": "#/properties/secret/properties/keyCertSecretName",
                     "type": "string",
                     "title": "Key Certificate Secret Name",
-                    "description": "Specify the key certificate secret name which is created with help of exported certificate.",
+                    "description": "Specify the key certificate secret name if you are installing CM after Engine otherwise it's not needed",
                     "default": ""
                 }
             }
@@ -658,7 +658,7 @@
                     "type": "integer",
                     "title": "Initial Delay",
                     "description": "Specify the initial delay in starting readiness probe in seconds.",
-                    "default": 220
+                    "default": 190
                 },
                 "timeoutSeconds": {
                     "$id": "#/properties/readinessProbe/properties/timeoutSeconds",
@@ -717,8 +717,8 @@
         "customProperties": {
             "$id": "#/properties/customProperties",
             "type": "array",
-            "title": "Custom Property Configuration",
-            "description": "Specify the custom properties if you want to customize properties in property file.",
+            "title": "Properties File Configuration",
+            "description": "Specify the custom properties if you want to modify these properties files 'conf/log4j.properties', 'bin/log.properties', 'bin/security.properties', 'bin/vendor.properties' then you can pass key and value in following format: <File Name Without Extension>_<Property Name>=<Property Value>. For Example: log_audit.log.maxfilesize=10MB",
 			"items": {
 				"$id": "#/properties/customProperties/items",
 				"type": "string",
@@ -729,7 +729,7 @@
             "$id": "#/properties/vmArguments",
             "type": "array",
             "title": "VM Argument Configuration",
-            "description": "Specify the VM arguments. For example DvalidateThruXSD=false",
+            "description": "Specify the VM arguments. For Example DvalidateThruXSD=false",
             "items": {
 				"$id": "#/properties/vmArguments/items",
 				"type": "string",
@@ -740,7 +740,7 @@
             "$id": "#/properties/customCertificate",
             "type": "object",
             "title": "Custom Certificate Configuration",
-            "description": "It updates the engine, CM, and web server certificate.",
+            "description": "It updates the engine, CM, and web server certificate. First you need to create the directory with 'CM_RESOURCES' name if it is not available in PV and place the certificate file in 'CM_RESOURCES' directory.",
             "default": {},
             "required": [
                 "customCertEnabled",
@@ -774,7 +774,7 @@
                     "$id": "#/properties/customCertificate/properties/commonKeyCertFile",
                     "type": "string",
                     "title": "Export Certificate File Name",
-                    "description": "Exported certificate will be stored in this file which we can used in engine side.",
+                    "description": "Exported certificate will be stored in this file which you can used in engine side.",
                     "default": ""
                 }
             }
@@ -782,8 +782,8 @@
         "customFiles": {
             "$id": "#/properties/customFiles",
             "type": "array",
-            "title": "Custom File Configuration",
-            "description": "Specify the custom files which you want update during deployment.",
+            "title": "Custom Directory/File Configuration",
+            "description": "Specify the custom directory/file if you want map inside container. For mapping, you need to provide full path of the file or directory. First you need to create the directory with 'CM_RESOURCES' name if it is not available in PV and place the custom directories/files in 'CM_RESOURCES' directory. For example: /conf/log4j2.xml, /bin/customDir",
             "items": {
 				"$id": "#/properties/customFiles/items",
 				"type": "string",
@@ -804,11 +804,11 @@
                     "type": "array",
                     "title": "Policy Type",
                     "description": "Specify the policy type.",
+					"additionalItems": false,
 					"items": {
-						"$id": "#/properties/networkPolicy/properties/policyTypes/items",
-						"type": "string",
-						"additionalItems": false
-					}
+                        "$id": "#/properties/networkPolicy/properties/policyTypes/items",
+                        "type": "string"
+                    }
                 },
                 "ingress": {
                     "$id": "#/properties/networkPolicy/properties/ingress",
@@ -818,7 +818,7 @@
                     "items": {
                         "$id": "#/properties/networkPolicy/properties/ingress/items",
                         "type": "object",
-                        "additionalItems": false
+                        "additionalItems": true
                     }
                 },
                 "egress": {
@@ -829,7 +829,7 @@
 					"items": {
 						"$id": "#/properties/networkPolicy/properties/egress/items",
 						"type": "object",
-						"additionalItems": false
+						"additionalItems": true
 					}
 				}
 			}
