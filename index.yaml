@@ -3,14 +3,14 @@ entries:
   helm-chart-test:
   - apiVersion: v2
     appVersion: "2.8"
-    created: "2021-08-10T12:05:42.493768038Z"
+    created: "2021-08-10T12:06:22.814096183Z"
     description: |-
       A Helm chart example.
       Documentation
       For additional details regarding install parameters check Helm Chart documentation at https://github.com/durgeshsingh2065/helm-repo
       License
       By installing this product you accept the following license terms: https://github.com/durgeshsingh2065/helm-repo
-    digest: 1f33746b24c2a27b4bf12c63c05a4ee4e882cbd7697d33bc9df2cffdc509e05d
+    digest: 0bc761b6cfedba61f2d9e0cdea57529fde513186fba8e7cb389431a58c5def54
     home: https://github.com/durgeshsingh2065/helm-repo
     icon: https://durgeshsingh2065github.io/helm-chart/test.png
     keywords:
@@ -25,52 +25,4 @@ entries:
     urls:
     - https://durgeshsingh2065.github.io/helm-repo/helm-chart-test-2.0.8.tgz
     version: 2.0.8
-  - apiVersion: v2
-    appVersion: "2.7"
-    created: "2021-08-10T12:05:42.493244322Z"
-    description: |-
-      A Helm chart example.
-      Documentation
-      For additional details regarding install parameters check Helm Chart documentation at https://github.com/durgeshsingh2065/helm-repo
-      License
-      By installing this product you accept the following license terms: https://github.com/durgeshsingh2065/helm-repo
-    digest: 039cdd40f1bb8f5103c15f80166f005e18248a98ab6755a981311558f3e1cfa5
-    home: https://github.com/durgeshsingh2065/helm-repo
-    icon: https://durgeshsingh2065github.io/helm-chart/test.png
-    keywords:
-    - amd64
-    - RHOCP
-    - Other
-    kubeVersion: '>=1.19.0'
-    maintainers:
-    - name: Durgesh
-    name: helm-chart-test
-    type: application
-    urls:
-    - https://durgeshsingh2065.github.io/helm-repo/helm-chart-test-2.0.7.tgz
-    version: 2.0.7
-  - apiVersion: v2
-    appVersion: "2.6"
-    created: "2021-08-10T12:05:42.492038923Z"
-    description: |-
-      A Helm chart example.
-      Documentation
-      For additional details regarding install parameters check Helm Chart documentation at https://github.com/durgeshsingh2065/helm-repo
-      License
-      By installing this product you accept the following license terms: https://github.com/durgeshsingh2065/helm-repo
-    digest: ed96cb470f42b63b4f2488efe288a5caa65896ac86649b4a92cfbec699a0c33e
-    home: https://github.com/durgeshsingh2065/helm-repo
-    icon: https://durgeshsingh2065github.io/helm-chart/test.png
-    keywords:
-    - amd64
-    - RHOCP
-    - Other
-    kubeVersion: '>=1.19.0'
-    maintainers:
-    - name: Durgesh
-    name: helm-chart-test
-    type: application
-    urls:
-    - https://durgeshsingh2065.github.io/helm-repo/helm-chart-test-2.0.6.tgz
-    version: 2.0.6
-generated: "2021-08-10T12:05:42.490560693Z"
+generated: "2021-08-10T12:06:22.81334582Z"
