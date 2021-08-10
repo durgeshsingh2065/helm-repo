@@ -2,54 +2,47 @@
     "$schema": "http://json-schema.org/draft-07/schema",
     "$id": "http://example.com/example.json",
     "type": "object",
-    "title": "JSON Schema Example",
-    "description": "The root schema comprises the entire JSON document.",
+    "title": "IBM Certified Container Software for Sterling Secure Proxy - Configuration Manager JSON schema",
     "required": [
         "license",
         "licenseType",
-        "replicaCount",
-        "arch",
         "image",
-        "storageSecurity",
-        "serviceAccount",
-        "service",
-        "secret"
+        "cmArgs",
+        "persistentVolume",
+        "secret",
+        "serviceAccount"
     ],
     "properties": {
         "license": {
             "$id": "#/properties/license",
             "type": "boolean",
-            "title": "License acceptance",
-            "description": "License acceptance description.",
-            "default": false,
-            "examples": [
-                false,
-				true
-            ]
+            "title": "SSP - CM license acceptance",
+            "description": "Please accept license after reading it at http://www-03.ibm.com/software/sla/sladb.nsf (L/N: L-BCHE-BXLMPM)",
+            "default": false
         },
         "licenseType": {
             "$id": "#/properties/licenseType",
             "type": "string",
-            "title": "License Type",
-            "description": "License Type description",
-            "default": "",
+            "title": "License edition for IBM Certified Container Software for SSP - CM",
+            "description": "Please provide the license type edition as either prod or non-prod for production or non-production respectively.",
+            "default": "prod",
             "examples": [
-                "non-prod",
-				"prod"
+			    "prod",
+                "non-prod"
             ]
         },
-        "replicaCount": {
-            "$id": "#/properties/replicaCount",
-            "type": "integer",
-            "title": "Replica Count",
-            "description": "Replica Count Description.",
-            "default": 1
+		"nameOverride": {
+            "$id": "#/properties/nameOverride",
+            "type": "string",
+            "title": "Name Override",
+            "description": "This name will be appended to release name to form the name of the resources created by this chart.",
+            "default": ""
         },
         "arch": {
             "$id": "#/properties/arch",
             "type": "string",
-            "title": "Arch",
-            "description": "Arch Description",
+            "title": "Worker Node Architecture",
+            "description": "Specify the worker node architecture where deployment would be done. The helm chart will try to detect the architecture based on the master node.",
             "default": "amd64",
             "examples": [
                 "amd64"
@@ -58,184 +51,320 @@
         "image": {
             "$id": "#/properties/image",
             "type": "object",
-            "title": "Image Details",
-            "description": "Image Details Description",
-            "default": {},
+            "title": "Container Image Configuration",
+            "default": {},            
             "required": [
                 "repository",
-                "pullPolicy",
-                "tag"
+                "tag",
+                "imageSecrets",
+                "pullPolicy"
             ],
             "properties": {
                 "repository": {
                     "$id": "#/properties/image/properties/repository",
                     "type": "string",
-                    "title": "Repo URL",
-                    "description": "Repo description",
-                    "default": "durgesh/image"                   
-                },
-                "pullPolicy": {
-                    "$id": "#/properties/image/properties/pullPolicy",
-                    "type": "string",
-                    "title": "Pull Policy",
-                    "description": "Pull Policy description",
-                    "default": "IfNotPresent"
+                    "title": "CM Image Repository",
+                    "description": "Specify the container image registry with image name",
+                    "default": "cp.icr.io/cp/ibm-ssp-cm/ssp-cm-docker-image"
                 },
                 "tag": {
                     "$id": "#/properties/image/properties/tag",
                     "type": "string",
-                    "title": "Tag",
-                    "description": "Tag",
-                    "default": "1.0"
-             
+                    "title": "Image Tag",
+                    "description": "Specify a valid image tag present on registry.",
+                    "default": "6.0.2.0.03",
+                    "examples": [
+                        "6.0.2.0.03",
+                        "6.0.2.0.02",
+                        "6.0.2.0.01"
+                    ]
+                },
+                "imageSecrets": {
+                    "$id": "#/properties/image/properties/imageSecrets",
+                    "type": "string",
+                    "title": "Image Registry Secret",
+                    "description": "Specify the secret to use when pulling the image. Please provide this when using an image from a private registry."
+                },
+                "pullPolicy": {
+                    "$id": "#/properties/image/properties/pullPolicy",
+                    "type": "string",
+                    "title": "Image Pull Policy",
+                    "description": "Specify the image pull policy for containers.",
+                    "default": "IfNotPresent",
+                    "examples": [
+                        "IfNotPresent",
+                        "Always",
+                        "Never"
+                    ]
+                },
+                "digest": {
+                    "$id": "#/properties/image/properties/digest",
+                    "type": "object",
+                    "title": "Image Digest Details",
+                    "default": {},                    
+                    "required": [
+                        "enabled",
+                        "value"
+                    ],
+                    "properties": {
+                        "enabled": {
+                            "$id": "#/properties/image/properties/digest/properties/enabled",
+                            "type": "boolean",
+                            "title": "Digest Enablement",
+                            "description": "Enable/disable digest to be used for image pull from registry.",
+                            "default": false
+                        },
+                        "value": {
+                            "$id": "#/properties/image/properties/digest/properties/value",
+                            "type": "string",
+                            "title": "Image Digest Value",
+                            "description": "An explanation about the purpose of this instance.",
+                            "default": "sha256:67cb57afe3be3e70eb81604ff82aa6f9498617ea55e0a7da8cb3eb6f55804f82"
+                        }
+                    }
                 }
-            },
-            "additionalProperties": true
+            }
+        },
+		"cmArgs": {
+            "$id": "#/properties/cmArgs",
+            "type": "object",
+            "title": "The cmArgs schema",
+			"default": {},
+            "required": [
+                "keyCertExport",
+                "keyCertAliasName",
+                "maxHeapSize"
+            ],
+            "properties": {
+                "keyCertExport": {
+                    "$id": "#/properties/cmArgs/properties/keyCertExport",
+                    "type": "boolean",
+                    "title": "Generate/Import Key Certificate",
+                    "description": "UnCheck if you have installed SSP Engine first and want to import Key Cert Exported from SSP Engine.",
+                    "default": true
+                },
+                "keyCertAliasName": {
+                    "$id": "#/properties/cmArgs/properties/keyCertAliasName",
+                    "type": "string",
+                    "title": "Key Cert Alias",
+                    "description": "Specify the key certificate alias name. ",
+                    "default": "keycert"
+                },
+                "maxHeapSize": {
+                    "$id": "#/properties/cmArgs/properties/maxHeapSize",
+                    "type": "string",
+                    "title": "Max Heap Size",
+                    "description": "Specify the CM application JVM heap size.",
+                    "default": "2048m"
+                }
+            }
+        },
+        "persistentVolume": {
+            "$id": "#/properties/persistentVolume",
+            "type": "object",
+            "title": "PV/PVC Configuration",
+            "default": {},
+            "required": [
+                "enabled",
+                "useDynamicProvisioning",
+                "size",
+                "accessMode"
+            ],
+            "properties": {
+                "enabled": {
+                    "$id": "#/properties/persistentVolume/properties/enabled",
+                    "type": "boolean",
+                    "title": "Enable/Disable Persistence",
+                    "description": "This parameters governs if persistence storage is required or not. Currenty, disabling this parameter is not supported.",
+                    "default": true
+                },
+                "useDynamicProvisioning": {
+                    "$id": "#/properties/persistentVolume/properties/useDynamicProvisioning",
+                    "type": "boolean",
+                    "title": "Enable/Disable Dynamic Provisioning",
+                    "description": "This parameter governs the enabling disabling of dynamic provisioning in container using storage class.",
+                    "default": false
+                },
+                "existingClaimName": {
+                    "$id": "#/properties/persistentVolume/properties/existingClaimName",
+                    "type": "string",
+                    "title": "Existing Persistent Volume Claim",
+                    "description": "Specify the existing persistent Volume claim name to be used for data persistence.",
+                    "default": ""
+                },
+                "labelName": {
+                    "$id": "#/properties/persistentVolume/properties/labelName",
+                    "type": "string",
+                    "title": "Label Name",
+                    "description": "Specify the label name for manually created persistent volume resource to be used for this deployment.",
+                    "default": "app.kubernetes.io/name"
+                },
+                "labelValue": {
+                    "$id": "#/properties/persistentVolume/properties/labelValue",
+                    "type": "string",
+                    "title": "Label Value",
+                    "description": "Specify the label value for manually created persistent volume resource to be used for this deployment.",
+                    "default": "ibm-ssp-cm-pv"
+                },
+                "storageClassName": {
+                    "$id": "#/properties/persistentVolume/properties/storageClassName",
+                    "type": "string",
+                    "title": "Storage Class Name",
+                    "description": "Specify the Storage Class name for dynamic provisioning for data persistence.",
+                    "default": "manual"
+                },
+                "size": {
+                    "$id": "#/properties/persistentVolume/properties/size",
+                    "type": "string",
+                    "title": "Persistent Volume Claim Size",
+                    "description": "Specify the claim size to be used for this deployment. Please note that this is minimum requirement for deployment.",
+                    "default": "2Gi"
+                },
+                "accessMode": {
+                    "$id": "#/properties/persistentVolume/properties/accessMode",
+                    "type": "string",
+                    "title": "Access Mode for Persistent Volume Claim",
+                    "description": "Specify the access mode for data persistence. Currently, only ReadWriteOnce is supported.",
+                    "default": "ReadWriteOnce",
+                    "examples": [
+                        "ReadWriteOnce"
+                    ]
+                }
+            }
         },
         "storageSecurity": {
             "$id": "#/properties/storageSecurity",
             "type": "object",
-            "title": "Storage Security",
-            "description": "storageSecurity description.",
-            "required": [
-                "supplementalGroups",
-                "portRange",
-                "ports",
-                "check"
-            ],
+            "title": "File System GID",
+            "default": {},
             "properties": {
-                "supplementalGroups": {
-                    "$id": "#/properties/storageSecurity/properties/supplementalGroups",
-                    "type": "array",
-                    "title": "Supplemental Groups ID",
-                    "description": "Supplemental Groups description",
-                    "additionalItems": true,
-                    "items": {
-                        "$id": "#/properties/storageSecurity/properties/supplementalGroups/items",
-                        "type": "integer",
-                        "additionalItems": true
-                    }
-                },
-                "portRange": {
-                    "$id": "#/properties/storageSecurity/properties/portRange",
-                    "type": "array",
-                    "title": "Port Range",
-                    "description": "Port Range Description.",  
-                    "items": {
-                        "$id": "#/properties/storageSecurity/properties/portRange/items",
-						"type": "object",
-						"properties": {
-							"Adapter Name": { "type": "string" },
-							"range": { "type": "string" }
-						},
-                        "additionalItems": true                        
-                    }
-                },
-                "ports": {
-                    "$id": "#/properties/storageSecurity/properties/ports",
-                    "type": "array",
-                    "title": "Ports",
-                    "description": "Ports Description",
-                    "items": {
-					  "$id": "#/properties/storageSecurity/properties/ports/items",
-					  "type": "string"
-					}
-                },
-                "check": {
-                    "$id": "#/properties/storageSecurity/properties/check",
-                    "type": "array",
-                    "title": "Check",
-                    "description": "Check description",
-                    "additionalItems": true,
-                    "items": {
-                        "$id": "#/properties/storageSecurity/properties/check/items",
-                        "type": "string",
-                        "additionalItems": true
-                    }
-                }
-            },
-            "additionalProperties": true
-        },
-        "serviceAccount": {
-            "$id": "#/properties/serviceAccount",
-            "type": "object",
-            "title": "Service Account",
-            "description": "Service Account description",
-            "required": [
-                "create",
-                "name"
-            ],
-            "properties": {
-                "create": {
-                    "$id": "#/properties/serviceAccount/properties/create",
-                    "type": "boolean",
-                    "title": "Create",
-                    "description": "Create description",
-                    "default": false
-                },
-                "name": {
-                    "$id": "#/properties/serviceAccount/properties/name",
+                "supplementalGroupId": {
+                    "$id": "#/properties/storageSecurity/properties/supplementalGroupId",
                     "type": "string",
-                    "title": "Name of the account",
-                    "default": ""                   
+                    "title": "Supplemental group ID",
+                    "description": "Specify the file system group ID for persistent volume.",
+                    "default": ""
                 }
-            },
-            "additionalProperties": true
+            }
         },
-        "service": {
+		"service": {
             "$id": "#/properties/service",
             "type": "object",
-            "title": "Service",
-            "description": "Service description",            
+            "title": "Service Configuration",
+            "default": {},
             "required": [
-                "type",
-                "port",
-                "annotations"               
+                "type",                
+                "jetty",
+                "cm"
             ],
             "properties": {
                 "type": {
                     "$id": "#/properties/service/properties/type",
                     "type": "string",
-                    "title": "Type",
-                    "description": "Define service type",
-                    "default": "ClusterIP",
+                    "title": "Service Type",
+                    "description": "Specify the service type to be used to expose the CM application.",
+                    "default": "LoadBalancer",
                     "examples": [
-                        "ClusterIP",
-						"LoadBalancer"
+                        "LoadBalancer",
+						"NodePort",
+                        "ClusterIP"						
                     ]
                 },
-                "port": {
-                    "$id": "#/properties/service/properties/port",
-                    "type": "integer",
-                    "title": "Port",
-                    "description": "Service access port",
-                    "default": 80
+                "loadBalancerIP": {
+                    "$id": "#/properties/service/properties/loadBalancerIP",
+                    "type": "string",
+                    "title": "Static Load Balancer IP",
+                    "description": "Specify a valid static Load Balancer IP, if available to access the CM application.",
+                    "default": ""
+                },
+                "externalIP": {
+                    "$id": "#/properties/service/properties/externalIP",
+                    "type": "string",
+                    "title": "ExternalIP for Service",
+                    "description": "Specify the External IP to access the CM application.",
+                    "default": ""
                 },
                 "annotations": {
                     "$id": "#/properties/service/properties/annotations",
                     "type": "object",
-                    "title": "Annotations",
-                    "description": "Define service annotation.",
-					"required": [
-						"firstName"					
-					],
-				   "additionalProperties": {
-					"type": "string"
-				   },
-				   "properties": {
-					  "firstName": {
-					     "type": "string",
-					     "title": "First name"
-					   }
-				    }
+                    "title": "Service Annotations",
+                    "description": "Specify the Service annotations if needed.",
+                    "default": {},
+                    "additionalProperties": true
+                },
+                "externalTrafficPolicy": {
+                    "$id": "#/properties/service/properties/externalTrafficPolicy",
+                    "type": "string",
+                    "title": "External Traffic Policy",
+                    "description": "Specify the external traffic policy if needed.",
+                    "default": ""
+                },
+                "sessionAffinity": {
+                    "$id": "#/properties/service/properties/sessionAffinity",
+                    "type": "string",
+                    "title": "Session Affinity",
+                    "description": "Specify the session affinity.",
+                    "default": "ClientIP"
+                },
+                "jetty": {
+                    "$id": "#/properties/service/properties/jetty",
+                    "type": "object",
+                    "title": "Web Port",
+                    "default": {},
+                    "required": [
+                        "servicePort",
+                        "containerPort"
+                    ],
+                    "properties": {
+                        "servicePort": {
+                            "$id": "#/properties/service/properties/jetty/properties/servicePort",
+                            "type": "integer",
+                            "title": "CM Web(Jetty) Application Port",
+                            "description": "Specify the CM web(jetty) application port number.",
+                            "default": 8443
+                        },
+                        "containerPort": {
+                            "$id": "#/properties/service/properties/jetty/properties/containerPort",
+                            "type": "integer",
+                            "title": "CM Web Application Container Port",
+                            "description": "Specify the CM web application container port number and do not change this number if not needed.",
+                            "default": 8443
+                        }
+                    }
+                },
+                "cm": {
+                    "$id": "#/properties/service/properties/cm",
+                    "type": "object",
+                    "title": "Listen Port",
+                    "default": {},
+                    "required": [
+                        "servicePort",
+                        "containerPort"
+                    ],
+                    "properties": {
+                        "servicePort": {
+                            "$id": "#/properties/service/properties/cm/properties/servicePort",
+                            "type": "integer",
+                            "title": "CM listen Port",
+                            "description": "Specify the CM listen port.",
+                            "default": 62366
+                        },
+                        "containerPort": {
+                            "$id": "#/properties/service/properties/cm/properties/containerPort",
+                            "type": "integer",
+                            "title": "CM Container Listen Port",
+                            "description": "Specify the CM listen container port number and do not change this number if not needed.",
+                            "default": 62366
+                        }
+                    }
                 }
-            },
-            "additionalProperties": true
+            }
         },
         "secret": {
             "$id": "#/properties/secret",
             "type": "object",
-            "title": "Secret",
+            "title": "Secret Configuration",
+            "default": {},
             "required": [
                 "secretName"
             ],
@@ -243,12 +372,468 @@
                 "secretName": {
                     "$id": "#/properties/secret/properties/secretName",
                     "type": "string",
-                    "title": "Name",
+                    "title": "CM secret",
+                    "description": "Specify the secret name which is created as prerequisite for this deployment.",
+                    "default": ""
+                },
+                "keyCertSecretName": {
+                    "$id": "#/properties/secret/properties/keyCertSecretName",
+                    "type": "string",
+                    "title": "Key Certificate Secret Name",
+                    "description": "Specify the key certificate secret name which is created with help of exported certificate.",
                     "default": ""
                 }
-            },
-            "additionalProperties": true
-        }
-    },
-    "additionalProperties": true
-}
+            }
+        },
+        "serviceAccount": {
+            "$id": "#/properties/serviceAccount",
+            "type": "object",
+            "title": "Service Account Configuration",
+            "default": {},
+            "required": [
+                "create"
+            ],
+            "properties": {
+                "create": {
+                    "$id": "#/properties/serviceAccount/properties/create",
+                    "type": "boolean",
+                    "title": "Service Account Create",
+                    "description": "UnCheck if you want to use existing service account.",
+                    "default": true
+                },
+                "name": {
+                    "$id": "#/properties/serviceAccount/properties/name",
+                    "type": "string",
+                    "title": "Service Account Name",
+                    "description": "Specify service account name if existing service account is to be use for this deployment.",
+                    "default": ""
+                }
+            }
+        },
+		"resources": {
+            "$id": "#/properties/resources",
+            "type": "object",
+            "title": "Resource Configuration",
+            "default": {},
+            "required": [
+                "limits",
+                "requests"
+            ],
+            "properties": {
+                "limits": {
+                    "$id": "#/properties/resources/properties/limits",
+                    "type": "object",
+                    "title": "Resource Limits",
+                    "default": {},
+                    "required": [
+                        "cpu",
+                        "memory"
+                    ],
+                    "properties": {
+                        "cpu": {
+                            "$id": "#/properties/resources/properties/limits/properties/cpu",
+                            "type": "string",
+                            "title": "CPU Limit",
+                            "description": "The upper limit of CPU core. Specify integers, fractions (e.g. 0.5), or millicores values(e.g. 1000m, where 1000m is equivalent to 1 core).",
+                            "default": "1000m"
+                        },
+                        "memory": {
+                            "$id": "#/properties/resources/properties/limits/properties/memory",
+                            "type": "string",
+                            "title": "Memory Limit",
+                            "description": "The memory upper limit in bytes. Specify integers with suffixes: E, P, T, G, M, K, or power-of-two equivalents: Ei, Pi, Ti, Gi, Mi, Ki.",
+                            "default": "2Gi"
+                        }
+                    }
+                },
+                "requests": {
+                    "$id": "#/properties/resources/properties/requests",
+                    "type": "object",
+                    "title": "Request Limits",
+                    "description": "An explanation about the purpose of this instance.",
+                    "default": {},
+                    "required": [
+                        "cpu",
+                        "memory"
+                    ],
+                    "properties": {
+                        "cpu": {
+                            "$id": "#/properties/resources/properties/requests/properties/cpu",
+                            "type": "string",
+                            "title": "CPU Request",
+                            "description": "The upper limit of CPU core. Specify integers, fractions (e.g. 0.5), or millicores values(e.g. 1000m, where 1000m is equivalent to 1 core).",
+                            "default": "1000m"
+                        },
+                        "memory": {
+                            "$id": "#/properties/resources/properties/requests/properties/memory",
+                            "type": "string",
+                            "title": "Memory Request",
+                            "description": "The memory upper limit in bytes. Specify integers with suffixes: E, P, T, G, M, K, or power-of-two equivalents: Ei, Pi, Ti, Gi, Mi, Ki.",
+                            "default": "2Gi"
+                        }
+                    }
+                }
+            }
+        },
+		"affinity": {
+            "$id": "#/properties/affinity",
+            "type": "object",
+            "title": "Affinity Configuration",
+            "default": {},
+            "required": [
+                "nodeAffinity"
+            ],
+            "properties": {
+                "nodeAffinity": {
+                    "$id": "#/properties/affinity/properties/nodeAffinity",
+                    "type": "object",
+                    "title": "Node Affinity",
+                    "default": {},
+                    "required": [
+                        "requiredDuringSchedulingIgnoredDuringExecution",
+                        "preferredDuringSchedulingIgnoredDuringExecution"
+                    ],
+                    "properties": {
+                        "requiredDuringSchedulingIgnoredDuringExecution": {
+                            "$id": "#/properties/affinity/properties/nodeAffinity/properties/requiredDuringSchedulingIgnoredDuringExecution",
+                            "type": "array",
+                            "title": "Node Affinity RequiredDuringSchedulingIgnoredDuringExecution",
+                            "description": "Specify in accordance with k8s PodSpec.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution",
+                            "default": [],
+                            "additionalItems": true,
+                            "items": {
+                                "$id": "#/properties/affinity/properties/nodeAffinity/properties/requiredDuringSchedulingIgnoredDuringExecution/items",
+								"type": "object",
+				                "additionalItems": true
+                            }
+                        },
+                        "preferredDuringSchedulingIgnoredDuringExecution": {
+                            "$id": "#/properties/affinity/properties/nodeAffinity/properties/preferredDuringSchedulingIgnoredDuringExecution",
+                            "type": "array",
+                            "title": "Node Affinity PreferredDuringSchedulingIgnoredDuringExecution",
+                            "description": "Specify in accordance with k8s PodSpec.nodeAffinity.preferredDuringSchedulingIgnoredDuringExecution",
+                            "default": [],
+                            "additionalItems": true,
+                            "items": {
+                                "$id": "#/properties/affinity/properties/nodeAffinity/properties/preferredDuringSchedulingIgnoredDuringExecution/items",
+								"type": "object",
+				                "additionalItems": true
+                            }
+                        }
+                    }
+                },
+                "podAffinity": {
+                    "$id": "#/properties/affinity/properties/podAffinity",
+                    "type": "object",
+                    "title": "Pod Affinity",
+                    "default": {},
+                    "required": [
+                        "requiredDuringSchedulingIgnoredDuringExecution",
+                        "preferredDuringSchedulingIgnoredDuringExecution"
+                    ],
+                    "properties": {
+                        "requiredDuringSchedulingIgnoredDuringExecution": {
+                            "$id": "#/properties/affinity/properties/podAffinity/properties/requiredDuringSchedulingIgnoredDuringExecution",
+                            "type": "array",
+                            "title": "Pod Affinity RequiredDuringSchedulingIgnoredDuringExecution",
+                            "description": "Specify in accordance with k8s PodSpec.podAffinity.requiredDuringSchedulingIgnoredDuringExecution",
+                            "default": [],
+                            "additionalItems": true,
+                            "items": {
+                                "$id": "#/properties/affinity/properties/podAffinity/properties/requiredDuringSchedulingIgnoredDuringExecution/items",
+								"type": "object",
+				                "additionalItems": true
+                            }
+                        },
+                        "preferredDuringSchedulingIgnoredDuringExecution": {
+                            "$id": "#/properties/affinity/properties/podAffinity/properties/preferredDuringSchedulingIgnoredDuringExecution",
+                            "type": "array",
+                            "title": "Pod Affinity PreferredDuringSchedulingIgnoredDuringExecution",
+                            "description": "Specify in accordance with k8s PodSpec.podAffinity.preferredDuringSchedulingIgnoredDuringExecution",
+                            "default": [],
+                            "additionalItems": true,
+                            "items": {
+                                "$id": "#/properties/affinity/properties/podAffinity/properties/preferredDuringSchedulingIgnoredDuringExecution/items",
+								"type": "object",
+				                "additionalItems": true
+                            }
+                        }
+                    }
+                },
+                "podAntiAffinity": {
+                    "$id": "#/properties/affinity/properties/podAntiAffinity",
+                    "type": "object",
+                    "title": "Pod Anti-Affinity",
+                    "description": "An explanation about the purpose of this instance.",
+                    "default": {},
+                    "required": [
+                        "requiredDuringSchedulingIgnoredDuringExecution",
+                        "preferredDuringSchedulingIgnoredDuringExecution"
+                    ],
+                    "properties": {
+                        "requiredDuringSchedulingIgnoredDuringExecution": {
+                            "$id": "#/properties/affinity/properties/podAntiAffinity/properties/requiredDuringSchedulingIgnoredDuringExecution",
+                            "type": "array",
+                            "title": "Pod Anti-Affinity RequiredDuringSchedulingIgnoredDuringExecution",
+                            "description": "Specify in accordance with k8s PodSpec.podAntiAffinity.requiredDuringSchedulingIgnoredDuringExecution",
+                            "default": [],
+                            "additionalItems": true,
+                            "items": {
+                                "$id": "#/properties/affinity/properties/podAntiAffinity/properties/requiredDuringSchedulingIgnoredDuringExecution/items",
+								"type": "object",
+				                "additionalItems": true
+                            }
+                        },
+                        "preferredDuringSchedulingIgnoredDuringExecution": {
+                            "$id": "#/properties/affinity/properties/podAntiAffinity/properties/preferredDuringSchedulingIgnoredDuringExecution",
+                            "type": "array",
+                            "title": "Pod Anti-Affinity PreferredDuringSchedulingIgnoredDuringExecution",
+                            "description": "Specify in accordance with k8s PodSpec.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution",
+                            "default": [],
+                            "additionalItems": true,
+                            "items": {
+                                "$id": "#/properties/affinity/properties/podAntiAffinity/properties/preferredDuringSchedulingIgnoredDuringExecution/items",
+								"type": "object",
+				                "additionalItems": true
+                            }
+                        }
+                    }
+                }
+            }
+        },
+		"livenessProbe": {
+            "$id": "#/properties/livenessProbe",
+            "type": "object",
+            "title": "Liveness Probe Configuration",
+            "required": [
+                "initialDelaySeconds",
+                "timeoutSeconds",
+                "periodSeconds",
+				"failureThreshold"
+            ],
+            "properties": {
+                "initialDelaySeconds": {
+                    "$id": "#/properties/livenessProbe/properties/initialDelaySeconds",
+                    "type": "integer",
+                    "title": "Initial Delay",
+                    "description": "Specify the initial delay in starting liveness probe in seconds",
+                    "default": 200
+                },
+                "timeoutSeconds": {
+                    "$id": "#/properties/livenessProbe/properties/timeoutSeconds",
+                    "type": "integer",
+                    "title": "Timeout",
+                    "description": "Specify the probe timeout in seconds",
+                    "default": 30
+                },
+                "periodSeconds": {
+                    "$id": "#/properties/livenessProbe/properties/periodSeconds",
+                    "type": "integer",
+                    "title": "Period",
+                    "description": "Specify the time period between two probes in seconds",
+                    "default": 60
+                },
+				"failureThreshold": {
+                    "$id": "#/properties/livenessProbe/properties/failureThreshold",
+                    "type": "integer",
+                    "title": "Failure Threshold",
+                    "description": "Specify the failure threshold count.",
+                    "default": 10
+                }
+            }
+        },
+        "readinessProbe": {
+            "$id": "#/properties/readinessProbe",
+            "type": "object",
+            "title": "Readiness Probe Configuration",
+            "required": [
+                "initialDelaySeconds",
+                "timeoutSeconds",
+                "periodSeconds",
+				"failureThreshold"
+            ],
+            "properties": {
+                "initialDelaySeconds": {
+                    "$id": "#/properties/readinessProbe/properties/initialDelaySeconds",
+                    "type": "integer",
+                    "title": "Initial Delay",
+                    "description": "Specify the initial delay in starting readiness probe in seconds.",
+                    "default": 220
+                },
+                "timeoutSeconds": {
+                    "$id": "#/properties/readinessProbe/properties/timeoutSeconds",
+                    "type": "integer",
+                    "title": "Timeout",
+                    "description": "Specify the probe timeout in seconds.",
+                    "default": 5
+                },
+                "periodSeconds": {
+                    "$id": "#/properties/readinessProbe/properties/periodSeconds",
+                    "type": "integer",
+                    "title": "Time Period",
+                    "description": "Specify the time period between two probes in seconds.",
+                    "default": 60
+                },
+				"failureThreshold": {
+                    "$id": "#/properties/livenessProbe/properties/failureThreshold",
+                    "type": "integer",
+                    "title": "Failure Threshold",
+                    "description": "Specify the failure threshold count.",
+                    "default": 10
+                }
+            }
+        },
+        "route": {
+            "$id": "#/properties/route",
+            "type": "object",
+            "title": "OpenShift Route Configuration",
+            "required": [
+                "enabled"
+            ],
+            "properties": {
+                "enabled": {
+                    "$id": "#/properties/route/properties/enabled",
+                    "type": "boolean",
+                    "title": "Enable/Disable OpenShift Route",
+                    "description": "Check if you want to enable OpenShift route creation.",
+                    "default": false
+                }
+            }
+        },
+        "dashboard": {
+            "$id": "#/properties/dashboard",
+            "type": "object",
+            "title": "Dashboard Monitoring",
+            "properties": {
+                "enabled": {
+                    "$id": "#/properties/dashboard/properties/enabled",
+                    "type": "boolean",
+                    "title": "Enable/Disable Dashboard",
+                    "description": "Enable/Disable dashboard monitoring",
+                    "default": false
+                }
+            }
+        },
+        "customProperties": {
+            "$id": "#/properties/customProperties",
+            "type": "array",
+            "title": "Custom Property Configuration",
+            "description": "Specify the custom properties if you want to customize properties in property file.",
+			"items": {
+				"$id": "#/properties/customProperties/items",
+				"type": "string",
+				"additionalItems": true
+			}
+        },
+        "vmArguments": {
+            "$id": "#/properties/vmArguments",
+            "type": "array",
+            "title": "VM Argument Configuration",
+            "description": "Specify the VM arguments. For example DvalidateThruXSD=false",
+            "items": {
+				"$id": "#/properties/vmArguments/items",
+				"type": "string",
+				"additionalItems": true
+			}
+        },
+        "customCertificate": {
+            "$id": "#/properties/customCertificate",
+            "type": "object",
+            "title": "Custom Certificate Configuration",
+            "description": "It updates the engine, CM, and web server certificate.",
+            "default": {},
+            "required": [
+                "customCertEnabled",
+                "commonCertFile",
+                "commonCertAlias",
+                "commonKeyCertFile"
+            ],
+            "properties": {
+                "customCertEnabled": {
+                    "$id": "#/properties/customCertificate/properties/customCertEnabled",
+                    "type": "boolean",
+                    "title": "Enable/Disable Custom Certificate",
+                    "description": "Check if you want to enable the custom certificate option.",
+                    "default": false
+                },
+                "commonCertFile": {
+                    "$id": "#/properties/customCertificate/properties/commonCertFile",
+                    "type": "string",
+                    "title": "Certificate File Name",
+                    "description": "Specify the certificate file name.",
+                    "default": ""
+                },
+                "commonCertAlias": {
+                    "$id": "#/properties/customCertificate/properties/commonCertAlias",
+                    "type": "string",
+                    "title": "Certificate Alias",
+                    "description": "Specify the certificate alias name.",
+                    "default": ""
+                },
+                "commonKeyCertFile": {
+                    "$id": "#/properties/customCertificate/properties/commonKeyCertFile",
+                    "type": "string",
+                    "title": "Export Certificate File Name",
+                    "description": "Exported certificate will be stored in this file which we can used in engine side.",
+                    "default": ""
+                }
+            }
+        },
+        "customFiles": {
+            "$id": "#/properties/customFiles",
+            "type": "array",
+            "title": "Custom File Configuration",
+            "description": "Specify the custom files which you want update during deployment.",
+            "items": {
+				"$id": "#/properties/customFiles/items",
+				"type": "string",
+				"additionalItems": true
+			}
+        },
+		"networkPolicy": {
+            "$id": "#/properties/networkPolicy",
+            "type": "object",
+            "title": "Network Policy Configuration",        
+            "default": {},
+            "required": [
+                "policyTypes"               
+            ],
+            "properties": {
+                "policyTypes": {
+                    "$id": "#/properties/networkPolicy/properties/policyTypes",
+                    "type": "array",
+                    "title": "Policy Type",
+                    "description": "Specify the policy type.",
+					"items": {
+						"$id": "#/properties/networkPolicy/properties/policyTypes/items",
+						"type": "string",
+						"additionalItems": false
+					}
+                },
+                "ingress": {
+                    "$id": "#/properties/networkPolicy/properties/ingress",
+                    "type": "array",
+                    "title": "Ingress Configure",
+                    "description": "Specify the ingress configuration",
+                    "items": {
+                        "$id": "#/properties/networkPolicy/properties/ingress/items",
+                        "type": "object",
+                        "additionalItems": false
+                    }
+                },
+                "egress": {
+					"$id": "#/properties/networkPolicy/properties/egress",
+					"type": "array",
+					"title": "Egress Configure",
+					"description": "Specify the egress configuration",
+					"items": {
+						"$id": "#/properties/networkPolicy/properties/egress/items",
+						"type": "object",
+						"additionalItems": false
+					}
+				}
+			}
+		}
+     },
+	 "additionalProperties": true
+ }
