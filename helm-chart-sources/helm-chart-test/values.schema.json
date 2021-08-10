@@ -4,48 +4,6 @@
     "type": "object",
     "title": "JSON Schema Example",
     "description": "The root schema comprises the entire JSON document.",
-    "default": {},
-    "examples": [
-        {
-            "license": false,
-            "licenseType": "non-prod",
-            "replicaCount": 1,
-            "arch": "amd64",
-            "image": {
-                "repository": "durgesh",
-                "pullPolicy": "IfNotPresent",
-                "tag": "1.0"
-            },
-            "storageSecurity": {
-                "supplementalGroups": [
-                    1000
-                ],
-                "portRange": [
-                    {
-                        "name": "adapter1",
-                        "value": "2002-2010"
-                    }
-                ],
-                "ports": [],
-                "check": [
-                    "durgesh"
-                ]
-            },
-            "serviceAccount": {
-                "create": true,
-                "name": ""
-            },
-            "service": {
-                "type": "ClusterIP",
-                "port": 80,
-                "annotations": {},
-                "annotations1": null
-            },
-            "secret": {
-                "secretName": "test-secret"
-            }
-        }
-    ],
     "required": [
         "license",
         "licenseType",
@@ -65,35 +23,34 @@
             "description": "License acceptance description.",
             "default": false,
             "examples": [
-                false
+                false,
+				true
             ]
         },
         "licenseType": {
             "$id": "#/properties/licenseType",
             "type": "string",
-            "title": "The licenseType schema",
-            "description": "An explanation about the purpose of this instance.",
+            "title": "License Type",
+            "description": "License Type description",
             "default": "",
             "examples": [
-                "non-prod"
+                "non-prod",
+				"prod"
             ]
         },
         "replicaCount": {
             "$id": "#/properties/replicaCount",
             "type": "integer",
-            "title": "The replicaCount schema",
-            "description": "An explanation about the purpose of this instance.",
-            "default": 0,
-            "examples": [
-                1
-            ]
+            "title": "Replica Count",
+            "description": "Replica Count Description.",
+            "default": 1
         },
         "arch": {
             "$id": "#/properties/arch",
             "type": "string",
-            "title": "The arch schema",
-            "description": "An explanation about the purpose of this instance.",
-            "default": "",
+            "title": "Arch",
+            "description": "Arch Description",
+            "default": "amd64",
             "examples": [
                 "amd64"
             ]
@@ -101,16 +58,9 @@
         "image": {
             "$id": "#/properties/image",
             "type": "object",
-            "title": "The image schema",
-            "description": "An explanation about the purpose of this instance.",
+            "title": "Image Details",
+            "description": "Image Details Description",
             "default": {},
-            "examples": [
-                {
-                    "repository": "durgesh",
-                    "pullPolicy": "IfNotPresent",
-                    "tag": "1.0"
-                }
-            ],
             "required": [
                 "repository",
                 "pullPolicy",
@@ -120,32 +70,24 @@
                 "repository": {
                     "$id": "#/properties/image/properties/repository",
                     "type": "string",
-                    "title": "The repository schema",
-                    "description": "An explanation about the purpose of this instance.",
-                    "default": "",
-                    "examples": [
-                        "durgesh"
-                    ]
+                    "title": "Repo URL",
+                    "description": "Repo description",
+                    "default": "durgesh/image"                   
                 },
                 "pullPolicy": {
                     "$id": "#/properties/image/properties/pullPolicy",
                     "type": "string",
-                    "title": "The pullPolicy schema",
-                    "description": "An explanation about the purpose of this instance.",
-                    "default": "",
-                    "examples": [
-                        "IfNotPresent"
-                    ]
+                    "title": "Pull Policy",
+                    "description": "Pull Policy description",
+                    "default": "IfNotPresent"
                 },
                 "tag": {
                     "$id": "#/properties/image/properties/tag",
                     "type": "string",
-                    "title": "The tag schema",
-                    "description": "An explanation about the purpose of this instance.",
-                    "default": "",
-                    "examples": [
-                        "1.0"
-                    ]
+                    "title": "Tag",
+                    "description": "Tag",
+                    "default": "1.0"
+             
                 }
             },
             "additionalProperties": true
@@ -153,26 +95,8 @@
         "storageSecurity": {
             "$id": "#/properties/storageSecurity",
             "type": "object",
-            "title": "The storageSecurity schema",
-            "description": "An explanation about the purpose of this instance.",
-            "default": {},
-            "examples": [
-                {
-                    "supplementalGroups": [
-                        1000
-                    ],
-                    "portRange": [
-                        {
-                            "name": "adapter1",
-                            "value": "2002-2010"
-                        }
-                    ],
-                    "ports": [],
-                    "check": [
-                        "durgesh"
-                    ]
-                }
-            ],
+            "title": "Storage Security",
+            "description": "storageSecurity description.",
             "required": [
                 "supplementalGroups",
                 "portRange",
@@ -183,132 +107,50 @@
                 "supplementalGroups": {
                     "$id": "#/properties/storageSecurity/properties/supplementalGroups",
                     "type": "array",
-                    "title": "The supplementalGroups schema",
-                    "description": "An explanation about the purpose of this instance.",
-                    "default": [],
-                    "examples": [
-                        [
-                            1000
-                        ]
-                    ],
+                    "title": "Supplemental Groups ID",
+                    "description": "Supplemental Groups description",
                     "additionalItems": true,
                     "items": {
                         "$id": "#/properties/storageSecurity/properties/supplementalGroups/items",
-                        "anyOf": [
-                            {
-                                "$id": "#/properties/storageSecurity/properties/supplementalGroups/items/anyOf/0",
-                                "type": "integer",
-                                "title": "The first anyOf schema",
-                                "description": "An explanation about the purpose of this instance.",
-                                "default": 0,
-                                "examples": [
-                                    1000
-                                ]
-                            }
-                        ]
+                        "type": "integer",
+                        "additionalItems": true
                     }
                 },
                 "portRange": {
                     "$id": "#/properties/storageSecurity/properties/portRange",
                     "type": "array",
-                    "title": "The portRange schema",
-                    "description": "An explanation about the purpose of this instance.",
-                    "default": [],
-                    "examples": [
-                        [
-                            {
-                                "name": "adapter1",
-                                "value": "2002-2010"
-                            }
-                        ]
-                    ],
+                    "title": "Port Range",
+                    "description": "Port Range Description.",                    
                     "additionalItems": true,
                     "items": {
                         "$id": "#/properties/storageSecurity/properties/portRange/items",
-                        "anyOf": [
-                            {
-                                "$id": "#/properties/storageSecurity/properties/portRange/items/anyOf/0",
-                                "type": "object",
-                                "title": "The first anyOf schema",
-                                "description": "An explanation about the purpose of this instance.",
-                                "default": {},
-                                "examples": [
-                                    {
-                                        "name": "adapter1",
-                                        "value": "2002-2010"
-                                    }
-                                ],
-                                "required": [
-                                    "name",
-                                    "value"
-                                ],
-                                "properties": {
-                                    "name": {
-                                        "$id": "#/properties/storageSecurity/properties/portRange/items/anyOf/0/properties/name",
-                                        "type": "string",
-                                        "title": "The name schema",
-                                        "description": "An explanation about the purpose of this instance.",
-                                        "default": "",
-                                        "examples": [
-                                            "adapter1"
-                                        ]
-                                    },
-                                    "value": {
-                                        "$id": "#/properties/storageSecurity/properties/portRange/items/anyOf/0/properties/value",
-                                        "type": "string",
-                                        "title": "The value schema",
-                                        "description": "An explanation about the purpose of this instance.",
-                                        "default": "",
-                                        "examples": [
-                                            "2002-2010"
-                                        ]
-                                    }
-                                },
-                                "additionalProperties": true
-                            }
-                        ]
+						"type": "object",
+						"properties": {
+							"Adapter Name": { "type": "string" },
+							"range": { "type": "string" }
+						},
+                        "additionalItems": true                        
                     }
                 },
                 "ports": {
                     "$id": "#/properties/storageSecurity/properties/ports",
                     "type": "array",
-                    "title": "The ports schema",
-                    "description": "An explanation about the purpose of this instance.",
-                    "default": [],
-                    "examples": [
-                        []
-                    ],
-                    "additionalItems": true,
-                    "items": {
-                        "$id": "#/properties/storageSecurity/properties/ports/items"
-                    }
+                    "title": "Ports",
+                    "description": "Ports Description",
+                    "additionalProperties": {
+						"type": "object"
+					}
                 },
                 "check": {
                     "$id": "#/properties/storageSecurity/properties/check",
                     "type": "array",
-                    "title": "The check schema",
-                    "description": "An explanation about the purpose of this instance.",
-                    "default": [],
-                    "examples": [
-                        [
-                            "durgesh"
-                        ]
-                    ],
+                    "title": "Check",
+                    "description": "Check description",
                     "additionalItems": true,
                     "items": {
                         "$id": "#/properties/storageSecurity/properties/check/items",
-                        "anyOf": [
-                            {
-                                "$id": "#/properties/storageSecurity/properties/check/items/anyOf/0",
-                                "type": "string",
-                                "title": "The first anyOf schema",
-                                "description": "An explanation about the purpose of this instance.",
-                                "default": "",
-                                "examples": [
-                                    "durgesh"
-                                ]
-                            }
-                        ]
+                        "type": "string",
+                        "additionalItems": true
                     }
                 }
             },
@@ -317,15 +159,8 @@
         "serviceAccount": {
             "$id": "#/properties/serviceAccount",
             "type": "object",
-            "title": "The serviceAccount schema",
-            "description": "An explanation about the purpose of this instance.",
-            "default": {},
-            "examples": [
-                {
-                    "create": true,
-                    "name": ""
-                }
-            ],
+            "title": "Service Account",
+            "description": "Service Account description",
             "required": [
                 "create",
                 "name"
@@ -334,22 +169,15 @@
                 "create": {
                     "$id": "#/properties/serviceAccount/properties/create",
                     "type": "boolean",
-                    "title": "The create schema",
-                    "description": "An explanation about the purpose of this instance.",
-                    "default": false,
-                    "examples": [
-                        true
-                    ]
+                    "title": "Create",
+                    "description": "Create description",
+                    "default": false
                 },
                 "name": {
                     "$id": "#/properties/serviceAccount/properties/name",
                     "type": "string",
-                    "title": "The name schema",
-                    "description": "An explanation about the purpose of this instance.",
-                    "default": "",
-                    "examples": [
-                        ""
-                    ]
+                    "title": "Name of the account",
+                    "default": ""                   
                 }
             },
             "additionalProperties": true
@@ -357,65 +185,41 @@
         "service": {
             "$id": "#/properties/service",
             "type": "object",
-            "title": "The service schema",
-            "description": "An explanation about the purpose of this instance.",
-            "default": {},
-            "examples": [
-                {
-                    "type": "ClusterIP",
-                    "port": 80,
-                    "annotations": {},
-                    "annotations1": null
-                }
-            ],
+            "title": "Service",
+            "description": "Service description",            
             "required": [
                 "type",
                 "port",
-                "annotations",
-                "annotations1"
+                "annotations"               
             ],
             "properties": {
                 "type": {
                     "$id": "#/properties/service/properties/type",
                     "type": "string",
-                    "title": "The type schema",
-                    "description": "An explanation about the purpose of this instance.",
-                    "default": "",
+                    "title": "Type",
+                    "description": "Define service type",
+                    "default": "ClusterIP",
                     "examples": [
-                        "ClusterIP"
+                        "ClusterIP",
+						"LoadBalancer"
                     ]
                 },
                 "port": {
                     "$id": "#/properties/service/properties/port",
                     "type": "integer",
-                    "title": "The port schema",
-                    "description": "An explanation about the purpose of this instance.",
-                    "default": 0,
-                    "examples": [
-                        80
-                    ]
+                    "title": "Port",
+                    "description": "Service access port",
+                    "default": 80
                 },
                 "annotations": {
                     "$id": "#/properties/service/properties/annotations",
                     "type": "object",
-                    "title": "The annotations schema",
-                    "description": "An explanation about the purpose of this instance.",
+                    "title": "Annotations",
+                    "description": "Define service annotation.",
                     "default": {},
-                    "examples": [
-                        {}
-                    ],
-                    "required": [],
-                    "additionalProperties": true
-                },
-                "annotations1": {
-                    "$id": "#/properties/service/properties/annotations1",
-                    "type": "null",
-                    "title": "The annotations1 schema",
-                    "description": "An explanation about the purpose of this instance.",
-                    "default": null,
-                    "examples": [
-                        null
-                    ]
+                    "additionalProperties": {
+						"type": "string"
+					}
                 }
             },
             "additionalProperties": true
@@ -423,14 +227,7 @@
         "secret": {
             "$id": "#/properties/secret",
             "type": "object",
-            "title": "The secret schema",
-            "description": "An explanation about the purpose of this instance.",
-            "default": {},
-            "examples": [
-                {
-                    "secretName": "test-secret"
-                }
-            ],
+            "title": "Secret",
             "required": [
                 "secretName"
             ],
@@ -438,12 +235,8 @@
                 "secretName": {
                     "$id": "#/properties/secret/properties/secretName",
                     "type": "string",
-                    "title": "The secretName schema",
-                    "description": "An explanation about the purpose of this instance.",
-                    "default": "",
-                    "examples": [
-                        "test-secret"
-                    ]
+                    "title": "Name",
+                    "default": ""
                 }
             },
             "additionalProperties": true
