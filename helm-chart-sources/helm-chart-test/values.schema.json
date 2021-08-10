@@ -120,8 +120,7 @@
                     "$id": "#/properties/storageSecurity/properties/portRange",
                     "type": "array",
                     "title": "Port Range",
-                    "description": "Port Range Description.",                    
-                    "additionalItems": true,
+                    "description": "Port Range Description.",  
                     "items": {
                         "$id": "#/properties/storageSecurity/properties/portRange/items",
 						"type": "object",
@@ -137,8 +136,9 @@
                     "type": "array",
                     "title": "Ports",
                     "description": "Ports Description",
-                    "additionalProperties": {
-						"type": "object"
+                    "items": {
+					  "$id": "#/properties/storageSecurity/properties/ports/items",
+					  "type": "string"
 					}
                 },
                 "check": {
@@ -216,10 +216,18 @@
                     "type": "object",
                     "title": "Annotations",
                     "description": "Define service annotation.",
-                    "default": {},
-                    "additionalProperties": {
-						"type": "string"
-					}
+					"required": [
+						"firstName"					
+					],
+				   "additionalProperties": {
+					"type": "string"
+				   },
+				   "properties": {
+					  "firstName": {
+					     "type": "string",
+					     "title": "First name"
+					   }
+				    }
                 }
             },
             "additionalProperties": true
