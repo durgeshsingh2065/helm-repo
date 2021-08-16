@@ -1,0 +1,162 @@
+license: false
+
+image:
+  # Specify the repository name along with image name
+  repository: "durgesh/api"
+  # Specify the tag name for the image  
+  tag: "1.0"
+  # Specify the image pull secret for the service, if the image is in private registry 
+  imageSecrets: ""
+  # Enable true/false to use image digest
+  digest:
+    enabled: false
+    value: sha256:e655e1760cfee7d
+  # Specify respective pull policy to used to override default `IfNotPresent` policy  
+  pullPolicy: Always
+
+# Manage PV directory using Supplemental Group ID if needed. 
+storageSecurity:
+  supplementalGroupId: ""
+  
+# persistence section specifies persistence volume claim settings which apply to the whole chart
+persistentVolume:
+  # enabled is whether to use Persistent Volumes or not
+  enabled: true
+  # useDynamicProvisioning is whether or not to use Storage Classes to dynamically create Persistent Volumes 
+  useDynamicProvisioning: false
+  # Specify the existing PV claim name to be used for deployment
+  existingClaimName: ""
+  # Specify this to use selector label name for PV-PVC bind
+  labelName: "app.kubernetes.io/name"
+  # Specify this to use selector label value for PV-PVC bind
+  labelValue: "durgesh-pv"
+  # Specify this to set storage class name
+  storageClassName: "manual"
+  # Specify this to set PVC size
+  size: 2Gi
+  # Specify this to set access mode
+  accessMode: "ReadWriteOnce"
+
+  
+# Specify these fields for Services
+service:
+  # Specify this to set service type.
+  type: "LoadBalancer"
+  # Specify this to set load balancer IP. It's added for cloud environment.
+  loadBalancerIP: "" 
+  # Specify this to set external IP to access application outside the cluster.
+  externalIP: ""
+  # Specify this to set annotations 
+  annotations: {}
+    #service.kubernetes.io/load-balancer-cloud-provider-ip-type: public
+    #service.kubernetes.io/load-balancer-cloud-provider-name: durgesh
+    #service.kubernetes.io/load-balancer-cloud-provider-zone: main01
+    
+  # Specify this to set external traffic policy 
+  externalTrafficPolicy: ""
+  # Specify this to set session Affinity
+  sessionAffinity: "ClientIP"
+  port:
+    servicePort: 8080
+    containerPort: 8080
+
+# Specify the Secret name if any
+secret:
+  secretName: ""
+
+# Specify the service account details
+serviceAccount:
+  # Set this field to `true` to create service account or `false` to use existing service account 
+  create: true
+  # Specify the name of service account to be used
+  name: "" 
+
+# Configure resource requests and limits
+# ref: http://kubernetes.io/docs/user-guide/compute-resources/
+resources:
+  limits:
+    cpu: 1000m
+    memory: 1Gi
+  requests:
+    cpu: 1000m
+    memory: 1Gi
+
+    
+affinity:
+  # https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#node-affinity-beta-feature
+  # The matchExpression for key 'kubernetes.io/arch' is automatically added based on
+  # architecture preference specified in 'arch'
+  nodeAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution: []
+  #    nodeSelectorTerms:
+  #    - matchExpressions:
+  #      - key: kubernetes.io/e2e-az-name
+  #        operator: In
+  #        values:
+  #        - e2e-az1
+  #        - e2e-az2
+# The matchExpression for key 'kubernetes.io/arch' is automatically added based on
+# architecture preference specified in 'arch'
+    preferredDuringSchedulingIgnoredDuringExecution: []
+
+  podAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution: []
+    preferredDuringSchedulingIgnoredDuringExecution: []
+
+  podAntiAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution: []
+    preferredDuringSchedulingIgnoredDuringExecution: []
+
+    
+# liveness and readiness Probe
+livenessProbe:
+  initialDelaySeconds: 10
+  timeoutSeconds: 30
+  periodSeconds: 30
+  failureThreshold: 10
+
+readinessProbe:
+  initialDelaySeconds: 8
+  timeoutSeconds: 5
+  periodSeconds: 30
+  failureThreshold: 10
+
+# Set this to true create route in OpenShift cluster
+route:
+  enabled: false
+ 
+
+# Add/Update VM arguments in the list format
+# <Key as Java property name>=<value>
+vmArguments: []
+# below is the example:
+#vmArguments:
+#  - Xdump:java+heap:events=user
+
+# Set network policy
+# https://kubernetes.io/docs/concepts/services-networking/network-policies/
+networkPolicy:
+  # apply policy type
+  policyTypes:
+  - Ingress
+  - Egress
+  
+  # apply ingress rule. Default allow all ingress traffic.
+  ingress:
+  - from: []
+    #- namespaceSelector:
+     #   matchLabels:
+      #    project: myproject
+    #- podSelector:
+     #   matchLabels:
+      #    role: frontend
+    #ports:
+    #- protocol: TCP
+     # port: 6379
+      
+  # apply egress rule. Default allow all egress traffic 
+  egress:
+  - to: []
+    #ports:
+    #- protocol: TCP
+     # port: 5978  
