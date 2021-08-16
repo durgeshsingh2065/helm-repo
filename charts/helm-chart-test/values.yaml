@@ -1,13 +1,12 @@
-
 license: false
 
 
-licenseType: non-prod
+licenseType: prod
 
-# Specify the respective Docker Image details for IBMCCS
+
 image:
   # Specify the repository name along with image name
-  repository: "cp.icr.io/cp/ibm-ssp-engine/ssp-engine-docker-image"
+  repository: "cp.icr.io/cp/ibm-ssp-ps/ssp-ps-docker-image"
   # Specify the tag name for the image  
   tag: "6.0.2.0.03"
   # Specify the image pull secret for the service, if the image is in private registry 
@@ -15,7 +14,7 @@ image:
   # Enable true/false to use image digest
   digest:
     enabled: false
-    value: sha256:d085b88203be74fca5b993e7134640eb8ffb90771a6d950a788b997a7c5f3cd2
+    value: sha256:2d40a579be2ba880f7942f3705eefd1af7f7787fc3962773088dabe2d057401c
   # Specify respective pull policy to used to override default `IfNotPresent` policy  
   pullPolicy: IfNotPresent
 
@@ -24,41 +23,42 @@ nameOverride: ""
 arch: "amd64"
 
 
-# Specify these fields to provide config values for Engine application
-engineArgs:
-   # Set the value "true" to Generate Key Certificate, if you are installing Secure Proxy Engine before CM
-   # Set the value "false" to Import Key Cert Exported from Secure Proxy CM if you have installed Secure Proxy CM first
-  keyCertExport: false
-  # Certificate alias value. 
-  keyCertAliasName: "keycert"
-  # JVM max heap size - don't set more than container limit resource memory. 
-  maxHeapSize: "2048m"
-  # Change SSP brand name if required else keep it as it is.
-  signOnDirName: "Signon"
+# Specify these fields to provide config values for Perimeter Server application
+psArgs:
+  # true - The Perimeter Server will be installed in more-secure zone
+  # false - The Perimeter Server will be installed in less-secure zone
+  networkZoneSecure: false
+  # Secure Network Interface - The perimeter server to use to communicate with the Secure Proxy engine.
+  secureInterface: "*"
+   # External Network Interface - The perimeter server to use to communicate with the backend serve / trading partners.
+  externalInterface: "*"
+  # Remote port number - The Secure Proxy engine will listen on for requests from the perimeter server.
+  # Required for More secure Perimeter Server  
+  remotePort: 30900
+  # Remote HostName/IP address - The Secure Proxy engine host that will be connected to this perimeter server.
+  # Required for More secure Perimeter Server
+  remoteAddress: ""
 
- 
-# persistence section specifies persistence volume claim settings which apply to the whole chart
-persistentVolume:
-  # enabled is whether to use Persistent Volumes or not
-  enabled: true
-  # useDynamicProvisioning is whether or not to use Storage Classes to dynamically create Persistent Volumes 
-  useDynamicProvisioning: false
-  # Specify the existing PV claim name to be used for deployment
-  existingClaimName: ""
-  # Specify this to use selector label name for PV-PVC bind
-  labelName: "app.kubernetes.io/name"
-  # Specify this to use selector label value for PV-PVC bind
-  labelValue: "ibm-ssp-engine-pv"
-  # Specify this to set storage class name
-  storageClassName: "manual"
-  # Specify this to set PVC size
-  size: 2Gi
-  # Specify this to set access mode
-  accessMode: "ReadWriteOnce"
+  # maxAllocation - Limits the amount of memory used for network buffers.
+  maxAllocation: 768
+  # maxHeapSize - JVM heap size, don't set more than container limit resource memory. 
+  maxHeapSize: 1024
+  # restricted - set to true to enable restricted network access, controlled by restricted.policy
+  # Required for More secure Perimeter Server 
+  restricted: false
+  # receiveBufferSize - socket receive buffer size for persistent connection
+  receiveBufferSize: 131072
+  # sendBufferSize - socket send buffer size for persistent connection
+  sendBufferSize: 131072
+  # logLevel - May have values of (ERROR,WARN,INFO,COMMTRACE,DEBUG or ALL)
+  logLevel: "ERROR"
+  # rotateLogs - enables log rotation when maxLogSize is reached.
+  rotateLogs: true
+  # maxLogSize - log output will roll over when this many records have been written
+  maxLogSize: 100000
+  # maxnumLogs - after this many logs are written, old logs will be deleted.
+  maxnumLogs: 10  
 
-# Manage PV directory using Supplemental Group ID if needed. 
-storageSecurity:
-  supplementalGroupId: ""
   
 # Specify these fields for Services
 service:
@@ -71,24 +71,20 @@ service:
   # Specify this to set annotations 
   annotations: {}
     #service.kubernetes.io/ibm-load-balancer-cloud-provider-ip-type: public
-    #service.kubernetes.io/ibm-load-balancer-cloud-provider-name: engine
+    #service.kubernetes.io/ibm-load-balancer-cloud-provider-name: ps
     #service.kubernetes.io/ibm-load-balancer-cloud-provider-zone: main01
     
   # Specify this to set external traffic policy 
   externalTrafficPolicy: ""
   # Specify this to set session Affinity
   sessionAffinity: "ClientIP"
-  engine: 
-    # Engine application is accessed by using below mentioned service port, so add port as per the requirement else it would be set 63366 as default port.
-    servicePort: 63366
-    # If traditional engine port is different from 63366 while migrating from traditional to container environment then in this case 
-    # we need to change container port as traditional engine port value else It is not required to change the container port value.    
-    containerPort: 63366
-  psMoreSecure: 
-    # More Secure Perimeter Server application is accessed by using below mentioned service port, so add the port number as per the requirement.
-    # The below mentioned service port must be used as remote port while configuring more secure perimeter server.   
-    servicePort:  
-
+  psLessSecure: 
+    # Less Secure Perimeter Server application is accessed by using below mentioned service port, 
+    # so add port as per the requirement else it would be set 30800 as default port.
+    servicePort: 30800
+    # It is not required to change the container port value. 
+    containerPort: 30800
+    
 # Specify these fields for Adapter Services
 # if you want to preserve client source IP then define service type as NodePort and externalTrafficPolicy as Local
 service2:
@@ -101,7 +97,7 @@ service2:
   # Specify this to set annotations 
   annotations: {}
     #service.kubernetes.io/ibm-load-balancer-cloud-provider-ip-type: public
-    #service.kubernetes.io/ibm-load-balancer-cloud-provider-name: engine
+    #service.kubernetes.io/ibm-load-balancer-cloud-provider-name: ps
     #service.kubernetes.io/ibm-load-balancer-cloud-provider-zone: main01
     
   # Specify this to set external traffic policy 
@@ -109,8 +105,8 @@ service2:
   # Specify this to set session Affinity
   sessionAffinity: "ClientIP"
   
-  # Expose adapter ports in range format if we are not using Less Secure Perimeter Server.
-  # nodePortRange - it will assign to service if you have selected service type as NodePort.  
+  # Expose adapter ports in range format if we are using Less Secure Perimeter Server.
+  # nodePortRange - it will assign to service if you have selected service type as NodePort. 
   portRanges: []
     #- name: ftp-adapter
      # portRange: 30101-30110
@@ -119,8 +115,8 @@ service2:
      # portRange: 30201-30210
      # nodePortRange: 30201-30210
       
-  # Expose adapter ports one by one if we are not using Less Secure Perimeter Server.
-  # nodePort - it will assign to service if you have selected service type as NodePort. 
+  # Expose adapter ports one by one if we are using Less Secure Perimeter Server.
+  # nodePort - it will assign to service if you have selected service type as NodePort.
   ports: []
     #- name: adapter1
      # port: 30110
@@ -130,14 +126,8 @@ service2:
      # nodePort: 30111
     #- name: adapter3
      # port: 30112    
-     # nodePort: 30112     
+     # nodePort: 30112 
 
-# Specify the Secret configuration for Engine
-secret:
-  # Secret name for PassPhase and Password
-  secretName: ""
-  # Secret name for Key Certificate - Use only, if you are installing Engine after Configuration Manager otherwise it's not needed. 
-  keyCertSecretName: ""
 
 # Specify the service account details
 serviceAccount:
@@ -146,19 +136,19 @@ serviceAccount:
   # Specify the name of service account to be used
   name: "" 
 
-
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
 ## Container CPU -  limit and request both are set 1 CPU(1000m) as default value but we can modify as per the requirement.
-## Container Memory - limit and request both are set 3 GB as default value but we can modify as per the requirement.
+## Container Memory - limit and request both are set 1 GB as default value but we can modify as per the requirement.
 resources:
   limits:
     cpu: 1000m
-    memory: 3Gi
+    memory: 1Gi
   requests:
     cpu: 1000m
-    memory: 3Gi
+    memory: 1Gi
 
+    
 affinity:
   # https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#node-affinity-beta-feature
   # The matchExpression for key 'kubernetes.io/arch' is automatically added based on
@@ -186,13 +176,13 @@ affinity:
 
 # liveness and readiness Probe
 livenessProbe:
-  initialDelaySeconds: 200
+  initialDelaySeconds: 150
   timeoutSeconds: 30
   periodSeconds: 60
   failureThreshold: 10
 
 readinessProbe:
-  initialDelaySeconds: 190
+  initialDelaySeconds: 140
   timeoutSeconds: 5
   periodSeconds: 60
   failureThreshold: 10
@@ -205,60 +195,6 @@ route:
 dashboard:
   enabled: false
 
-  
-# The following files can be customized using key value pair in the list format.
-# bin/log.properties, bin/security.properties, bin/perimeter.properties, bin/cdsp.properties, bin/portal/mediatypes.properties 
-# bin/portal/pages.properties, conf/log4j.properties
-# Add/Update: Key and Value both must be provided in the below format.
-# <File Name Without Extension>_<Property Name>=<Property Value>
-customProperties: []
-# below is the example: 
-#customProperties:
-#  - log_audit.log.maxfilesize=10MB
-#  - perimeter_conduitStreamPair.bufferSize=500K
-
-
-# Add/Update VM arguments in the list format
-# <Key as Java property name>=<value>
-vmArguments: []
-# below is the example: 
-#vmArguments:
-#  - Djavax.net.debug=ssl,handshake,data,trustmanager
-#  - Xdump:java+heap:events=user
-
-
-# Use to import custom certificate which was exported from the CM.
-# set the value "true" to import the custom certificate.
-# set the value "false" to not import the custom certificate.  
-customCertificate:
-  customCertEnabled: false
-  # set alias name
-  commonCertAlias: ""
-  # set key certificate file name which was exported from the CM.
-  commonKeyCertFile: ""
-# below is the example: 
-#customCertificate:
-#  customCertEnabled: true
-#  commonCertAlias: "commonCert"
-#  commonKeyCertFile: "commonDefKeyCert.txt"
-
-
-# The custom directories/files can be mapped using the list format.
-# For mapping, We need to provide full path of the file or directory. 
-# First we need to create the directory with 'ENG_RESOURCES' name if it is not available into PV. 
-# and keep the custom directories/files into created directory. 
-customFiles: []
-# In the below example we need to keep aspera.conf, log4j2.xml, ncipher_gen2.cfg.jsse and lunasa_6_0.cfg.jsse files and
-# Signon directory inside 'ENG_RESOURCES' directory.
-# so that the container will copy these files into respective directory.   
-#customFiles:
-#  - /bin/aspera.conf
-#  - /conf/log4j2.xml
-#  - /conf/lunasa_6_0.cfg.jsse
-#  - /conf/ncipher_gen2.cfg.jsse
-#  - /Signon 
-
-  
 # Set network policy
 # https://kubernetes.io/docs/concepts/services-networking/network-policies/
 networkPolicy:
@@ -286,4 +222,4 @@ networkPolicy:
     #ports:
     #- protocol: TCP
      # port: 5978  
-
+     

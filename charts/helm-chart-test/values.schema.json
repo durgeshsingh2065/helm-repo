@@ -2,28 +2,26 @@
     "$schema": "http://json-schema.org/draft-07/schema",
     "$id": "http://example.com/example.json",
     "type": "object",
-    "title": "IBM Certified Container Software for Sterling Secure Proxy - Engine JSON schema",
+    "title": "IBM Certified Container Software for Sterling Secure Proxy - Perimeter Server JSON schema",
     "required": [
         "license",
         "licenseType",
         "image",
-        "engineArgs",
-        "persistentVolume",
-        "secret",
+        "psArgs",
         "serviceAccount"
     ],
     "properties": {
         "license": {
             "$id": "#/properties/license",
             "type": "boolean",
-            "title": "SSP - Engine license acceptance",
+            "title": "SSP - PS license acceptance",
             "description": "Please accept license after reading it at http://www-03.ibm.com/software/sla/sladb.nsf (L/N: L-BCHE-BXLMPM)",
             "default": false
         },
         "licenseType": {
             "$id": "#/properties/licenseType",
             "type": "string",
-            "title": "License edition for IBM Certified Container Software for SSP - Engine",
+            "title": "License edition for IBM Certified Container Software for SSP - PS",
             "description": "Please provide the license type edition as either prod or non-prod for production or non-production respectively.",
             "default": "prod",
             "examples": [
@@ -63,9 +61,9 @@
                 "repository": {
                     "$id": "#/properties/image/properties/repository",
                     "type": "string",
-                    "title": "Engine Image Repository",
+                    "title": "PS Image Repository",
                     "description": "Specify the container image registry with image name",
-                    "default": "cp.icr.io/cp/ibm-ssp-engine/ssp-engine-docker-image"
+                    "default": "cp.icr.io/cp/ibm-ssp-ps/ssp-ps-docker-image"
                 },
                 "tag": {
                     "$id": "#/properties/image/properties/tag",
@@ -119,150 +117,138 @@
                             "type": "string",
                             "title": "Image Digest Value",
                             "description": "An explanation about the purpose of this instance.",
-                            "default": "sha256:d085b88203be74fca5b993e7134640eb8ffb90771a6d950a788b997a7c5f3cd2"
+                            "default": "sha256:2d40a579be2ba880f7942f3705eefd1af7f7787fc3962773088dabe2d057401c"
                         }
                     }
                 }
             }
         },
-		"engineArgs": {
-            "$id": "#/properties/engineArgs",
+		"psArgs": {
+            "$id": "#/properties/psArgs",
             "type": "object",
-            "title": "Engine Configuration Parameters",
+            "title": "PS Configuration Parameters",
 			"default": {},
             "required": [
-                "keyCertExport",
-                "keyCertAliasName",
-                "maxHeapSize",
-				"signOnDirName"
+                "networkZoneSecure",
+                "secureInterface",
+                "externalInterface",
+				"maxAllocation",
+				"maxHeapSize",
+				"restricted",
+				"receiveBufferSize",
+				"sendBufferSize",
+				"logLevel",
+				"rotateLogs",
+				"maxnumLogs"
             ],
             "properties": {
-                "keyCertExport": {
-                    "$id": "#/properties/engineArgs/properties/keyCertExport",
+                "networkZoneSecure": {
+                    "$id": "#/properties/psArgs/properties/networkZoneSecure",
                     "type": "boolean",
-                    "title": "Generate/Import Key Certificate",
-                    "description": "Check if you are installing SSP Engine before CM.",
+                    "title": "Perimeter Server Type",
+                    "description": "Check if you are installing more secure perimeter server else it will install less secure perimeter server.",
                     "default": false
                 },
-                "keyCertAliasName": {
-                    "$id": "#/properties/engineArgs/properties/keyCertAliasName",
+                "secureInterface": {
+                    "$id": "#/properties/psArgs/properties/secureInterface",
                     "type": "string",
-                    "title": "Key Cert Alias",
-                    "description": "Specify the key certificate alias name. ",
-                    "default": "keycert"
+                    "title": "Secure Network Interface",
+                    "description": "The perimeter server to use to communicate with the Secure Proxy engine.",
+                    "default": "*"
+                },
+                "externalInterface": {
+                    "$id": "#/properties/psArgs/properties/externalInterface",
+                    "type": "string",
+                    "title": "External Network Interface",
+                    "description": "The perimeter server to use to communicate with the backend serve / trading partners",
+                    "default": "*"
+                },
+                "remotePort": {
+                    "$id": "#/properties/psArgs/properties/remotePort",
+                    "type": "integer",
+                    "title": "Remote Port",
+                    "description": "The Secure Proxy engine will listen on for requests from the perimeter server and it is required if you are installing more secure PS.",
+                    "default": 30900
+                },
+                "remoteAddress": {
+                    "$id": "#/properties/psArgs/properties/remoteAddress",
+                    "type": "string",
+                    "title": "Remote HostName/IP Address",
+                    "description": "The Secure Proxy engine host that will be connected to this perimeter server and it is required if you are installing more secure PS.",
+                    "default": ""
+                },
+                "maxAllocation": {
+                    "$id": "#/properties/psArgs/properties/maxAllocation",
+                    "type": "integer",
+                    "title": "Max Allocation",
+                    "description": "Limits the amount of memory used for network buffers.",
+                    "default": 768
                 },
                 "maxHeapSize": {
-                    "$id": "#/properties/engineArgs/properties/maxHeapSize",
-                    "type": "string",
-                    "title": "Max Heap Size",
-                    "description": "Specify the Engine application JVM heap size.",
-                    "default": "2048m"
+                    "$id": "#/properties/psArgs/properties/maxHeapSize",
+                    "type": "integer",
+                    "title": "JVM Heap Size",
+                    "description": "JVM heap size, don't set more than container limit resource memory.",
+                    "default": 1024
                 },
-                "signOnDirName": {
-                    "$id": "#/properties/engineArgs/properties/signOnDirName",
-                    "type": "string",
-                    "title": "Specify SSP Brand Name",
-                    "description": "Specify SSP brand name if required else not needed.",
-                    "default": "Signon"
-                }
-            }
-        },
-        "persistentVolume": {
-            "$id": "#/properties/persistentVolume",
-            "type": "object",
-            "title": "PV and PVC Configuration",
-            "default": {},
-            "required": [
-                "enabled",
-                "useDynamicProvisioning",
-                "size",
-                "accessMode"
-            ],
-            "properties": {
-                "enabled": {
-                    "$id": "#/properties/persistentVolume/properties/enabled",
+                "restricted": {
+                    "$id": "#/properties/psArgs/properties/restricted",
                     "type": "boolean",
-                    "title": "Enable/Disable Persistence",
-                    "description": "This parameters governs if persistence storage is required or not. Currently, disabling this parameter is not supported.",
-                    "default": true
-                },
-                "useDynamicProvisioning": {
-                    "$id": "#/properties/persistentVolume/properties/useDynamicProvisioning",
-                    "type": "boolean",
-                    "title": "Enable/Disable Dynamic Provisioning",
-                    "description": "This parameter governs the enabling disabling of dynamic provisioning in container using storage class.",
+                    "title": "Restricted",
+                    "description": "check to enable restricted network access, controlled by restricted.policy and it is required if you are installing more secure PS.",
                     "default": false
                 },
-                "existingClaimName": {
-                    "$id": "#/properties/persistentVolume/properties/existingClaimName",
-                    "type": "string",
-                    "title": "Existing Persistent Volume Claim",
-                    "description": "Specify the existing persistent Volume claim name to be used for data persistence.",
-                    "default": ""
+                "receiveBufferSize": {
+                    "$id": "#/properties/psArgs/properties/receiveBufferSize",
+                    "type": "integer",
+                    "title": "Receive Buffer Size",
+                    "description": "Socket receive buffer size for persistent connection.",
+                    "default": 131072
                 },
-                "labelName": {
-                    "$id": "#/properties/persistentVolume/properties/labelName",
-                    "type": "string",
-                    "title": "Label Name",
-                    "description": "Specify the label name for manually created persistent volume resource to be used for this deployment.",
-                    "default": "app.kubernetes.io/name"
+                "sendBufferSize": {
+                    "$id": "#/properties/psArgs/properties/sendBufferSize",
+                    "type": "integer",
+                    "title": "Send Buffer Size",
+                    "description": "Socket send buffer size for persistent connection.",
+                    "default": 131072
                 },
-                "labelValue": {
-                    "$id": "#/properties/persistentVolume/properties/labelValue",
+                "logLevel": {
+                    "$id": "#/properties/psArgs/properties/logLevel",
                     "type": "string",
-                    "title": "Label Value",
-                    "description": "Specify the label value for manually created persistent volume resource to be used for this deployment.",
-                    "default": "ibm-ssp-engine-pv"
+                    "title": "Log Level",
+                    "description": "May have values of (ERROR,WARN,INFO,COMMTRACE,DEBUG or ALL).",
+                    "default": "ERROR"
                 },
-                "storageClassName": {
-                    "$id": "#/properties/persistentVolume/properties/storageClassName",
-                    "type": "string",
-                    "title": "Storage Class Name",
-                    "description": "Specify the Storage Class name for dynamic provisioning for data persistence.",
-                    "default": "manual"
+                "rotateLogs": {
+                    "$id": "#/properties/psArgs/properties/rotateLogs",
+                    "type": "Rotation Log",
+                    "title": "More Secure PS - Remote Port",
+                    "description": "Enables log rotation when maxLogSize is reached.",
+                    "default": true
                 },
-                "size": {
-                    "$id": "#/properties/persistentVolume/properties/size",
-                    "type": "string",
-                    "title": "Persistent Volume Claim Size",
-                    "description": "Specify the claim size to be used for this deployment. Please note that this is minimum requirement for deployment.",
-                    "default": "2Gi"
+                "maxLogSize": {
+                    "$id": "#/properties/psArgs/properties/maxLogSize",
+                    "type": "integer",
+                    "title": "Max Log Size",
+                    "description": "Log output will roll over when this many records have been written.",
+                    "default": 100000
                 },
-                "accessMode": {
-                    "$id": "#/properties/persistentVolume/properties/accessMode",
-                    "type": "string",
-                    "title": "Access Mode for Persistent Volume Claim",
-                    "description": "Specify the access mode for data persistence. Currently, only ReadWriteOnce is supported.",
-                    "default": "ReadWriteOnce",
-                    "examples": [
-                        "ReadWriteOnce"
-                    ]
+                "maxnumLogs": {
+                    "$id": "#/properties/psArgs/properties/maxnumLogs",
+                    "type": "integer",
+                    "title": "Maximum Log Files",
+                    "description": "After this many logs are written, old logs will be deleted.",
+                    "default": 10
                 }
             }
         },
-        "storageSecurity": {
-            "$id": "#/properties/storageSecurity",
-            "type": "object",
-            "title": "File System GID - Container Supplemental Group",
-            "default": {},
-            "properties": {
-                "supplementalGroupId": {
-                    "$id": "#/properties/storageSecurity/properties/supplementalGroupId",
-                    "type": "string",
-                    "title": "Container Supplemental Group ID",
-                    "description": "Specify the file system group ID for persistent volume.",
-                    "default": ""
-                }
-            }
-        },
-		"service": {
+        "service": {
             "$id": "#/properties/service",
             "type": "object",
             "title": "Service Configuration",
             "default": {},
             "required": [
-                "type",                
-                "engine"
+                "type"
             ],
             "properties": {
                 "type": {
@@ -313,10 +299,10 @@
                     "description": "Specify the session affinity.",
                     "default": "ClientIP"
                 },
-                "engine": {
-                    "$id": "#/properties/service/properties/engine",
+                "psLessSecure": {
+                    "$id": "#/properties/service/properties/psLessSecure",
                     "type": "object",
-                    "title": "Engine Port",
+                    "title": "PS Less Secure Port",
                     "default": {},
                     "required": [
                         "servicePort",
@@ -324,32 +310,18 @@
                     ],
                     "properties": {
                         "servicePort": {
-                            "$id": "#/properties/service/properties/engine/properties/servicePort",
+                            "$id": "#/properties/service/properties/psLessSecure/properties/servicePort",
                             "type": "integer",
-                            "title": "Engine Service Port",
-                            "description": "Specify the engine port number.",
-                            "default": 63366
+                            "title": "Service Port",
+                            "description": "Specify the PS less secure port number.",
+                            "default": 30800
                         },
                         "containerPort": {
-                            "$id": "#/properties/service/properties/engine/properties/containerPort",
+                            "$id": "#/properties/service/properties/psLessSecure/properties/containerPort",
                             "type": "integer",
-                            "title": "Engine Container Port",
-                            "description": "Specify the engine container port number and do not change this number if not needed.",
-                            "default": 63366
-                        }
-                    }
-                },
-                "psMoreSecure": {
-                    "$id": "#/properties/service/properties/psMoreSecure",
-                    "type": "object",
-                    "title": "PS More Secure Port",
-                    "default": {},
-                    "properties": {
-                        "servicePort": {
-                            "$id": "#/properties/service/properties/psMoreSecure/properties/servicePort",
-                            "type": "integer",
-                            "title": "PS More Secure Port",
-                            "description": "Specify the PS more secure port if you are configuring PS server and this would be a remote port while configuring more secure perimeter server else not needed."
+                            "title": "Container Port",
+                            "description": "Specify the PS less secure container port number and do not change this number if not needed.",
+                            "default": 30800
                         }
                     }
                 }
@@ -413,7 +385,7 @@
                     "$id": "#/properties/service2/properties/portRanges",
                     "type": "array",
                     "title": "Adapter Ports Range",
-					"description": "Expose adapter ports in range format if you are not using Less Secure Perimeter Server else not needed.",
+					"description": "Expose adapter ports in range format.",
                     "default": [],
                     "items": {
                         "$id": "#/properties/service2/properties/portRanges/items",
@@ -442,7 +414,7 @@
                     "$id": "#/properties/service2/properties/ports",
                     "type": "array",
                     "title": "Adapter Ports",
-					"description": "Expose adapter ports one by one if you are not using Less Secure Perimeter Server else not needed.",
+					"description": "Expose adapter ports one by one.",
                     "default": [],
                     "items": {
                         "$id": "#/properties/service2/properties/ports/items",
@@ -466,31 +438,6 @@
 						},
                         "additionalItems": true
                     }
-                }
-            }
-        },
-        "secret": {
-            "$id": "#/properties/secret",
-            "type": "object",
-            "title": "Secret Configuration",
-            "default": {},
-            "required": [
-                "secretName"
-            ],
-            "properties": {
-                "secretName": {
-                    "$id": "#/properties/secret/properties/secretName",
-                    "type": "string",
-                    "title": "Engine Secret Name",
-                    "description": "Specify the secret name which is created as prerequisite for this deployment.",
-                    "default": ""
-                },
-                "keyCertSecretName": {
-                    "$id": "#/properties/secret/properties/keyCertSecretName",
-                    "type": "string",
-                    "title": "Key Certificate Secret Name",
-                    "description": "Specify the key certificate secret name if you are installing Engine after CM otherwise it's not needed",
-                    "default": ""
                 }
             }
         },
@@ -551,7 +498,7 @@
                             "type": "string",
                             "title": "Memory Limit",
                             "description": "The memory upper limit in bytes. Specify integers with suffixes: E, P, T, G, M, K, or power-of-two equivalents: Ei, Pi, Ti, Gi, Mi, Ki.",
-                            "default": "3Gi"
+                            "default": "1Gi"
                         }
                     }
                 },
@@ -577,10 +524,10 @@
                             "type": "string",
                             "title": "Memory Request",
                             "description": "The memory upper limit in bytes. Specify integers with suffixes: E, P, T, G, M, K, or power-of-two equivalents: Ei, Pi, Ti, Gi, Mi, Ki.",
-                            "default": "3Gi"
+                            "default": "1Gi"
                         }
                     }
-                }
+               }
             }
         },
 		"affinity": {
@@ -724,7 +671,7 @@
                     "type": "integer",
                     "title": "Initial Delay",
                     "description": "Specify the initial delay in starting liveness probe in seconds",
-                    "default": 200
+                    "default": 150
                 },
                 "timeoutSeconds": {
                     "$id": "#/properties/livenessProbe/properties/timeoutSeconds",
@@ -765,7 +712,7 @@
                     "type": "integer",
                     "title": "Initial Delay",
                     "description": "Specify the initial delay in starting readiness probe in seconds.",
-                    "default": 190
+                    "default": 140
                 },
                 "timeoutSeconds": {
                     "$id": "#/properties/readinessProbe/properties/timeoutSeconds",
@@ -820,74 +767,6 @@
                     "default": false
                 }
             }
-        },
-        "customProperties": {
-            "$id": "#/properties/customProperties",
-            "type": "array",
-            "title": "Properties File Configuration",
-            "description": "Specify the custom properties if you want to add/modify the following properties files: bin/log.properties, bin/security.properties, bin/perimeter.properties, bin/cdsp.properties, bin/portal/mediatypes.properties, bin/portal/pages.properties, conf/log4j.properties and for this you need to pass property in key and value format: <File Name Without Extension>_<Property Name>=<Property Value>. For Example: log_audit.log.maxfilesize=10MB",
-			"items": {
-				"$id": "#/properties/customProperties/items",
-				"type": "string",
-				"additionalItems": true
-			}
-        },
-        "vmArguments": {
-            "$id": "#/properties/vmArguments",
-            "type": "array",
-            "title": "VM Argument Configuration",
-            "description": "Specify VM arguments. For Example Djavax.net.debug=ssl,handshake,data,trustmanager",
-            "items": {
-				"$id": "#/properties/vmArguments/items",
-				"type": "string",
-				"additionalItems": true
-			}
-        },
-        "customCertificate": {
-            "$id": "#/properties/customCertificate",
-            "type": "object",
-            "title": "Custom Certificate Configuration",
-            "description": "Use this if you want to import custom certificate which was exported from the CM.",
-            "default": {},
-            "required": [
-                "customCertEnabled",
-                "commonCertAlias",
-                "commonKeyCertFile"
-            ],
-            "properties": {
-                "customCertEnabled": {
-                    "$id": "#/properties/customCertificate/properties/customCertEnabled",
-                    "type": "boolean",
-                    "title": "Enable/Disable Custom Certificate",
-                    "description": "Check if you want to enable the custom certificate option.",
-                    "default": false
-                },
-                "commonCertAlias": {
-                    "$id": "#/properties/customCertificate/properties/commonCertAlias",
-                    "type": "string",
-                    "title": "Certificate Alias",
-                    "description": "Specify the certificate alias name.",
-                    "default": ""
-                },
-                "commonKeyCertFile": {
-                    "$id": "#/properties/customCertificate/properties/commonKeyCertFile",
-                    "type": "string",
-                    "title": "Certificate File Name",
-                    "description": "Specify the certificate file name which was exported from the CM and First you need to create the directory with 'ENG_RESOURCES' name in PV if it is not available and place the key certificate file in 'ENG_RESOURCES' directory",
-                    "default": ""
-                }
-            }
-        },
-        "customFiles": {
-            "$id": "#/properties/customFiles",
-            "type": "array",
-            "title": "Custom Directory/File Configuration",
-            "description": "Specify the custom directories/files if you want map inside container and for this you need to specify full path of the file or directory and First you need to create the directory with 'ENG_RESOURCES' name in PV if it is not available and place the custom directories/files in 'ENG_RESOURCES' directory. For example: /conf/log4j2.xml, /bin/aspera.conf and /Signon etc.",
-            "items": {
-				"$id": "#/properties/customFiles/items",
-				"type": "string",
-				"additionalItems": true
-			}
         },
 		"networkPolicy": {
             "$id": "#/properties/networkPolicy",
