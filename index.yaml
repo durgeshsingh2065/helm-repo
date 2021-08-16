@@ -3,14 +3,11 @@ entries:
   helm-chart-test:
   - apiVersion: v2
     appVersion: "2.8"
-    created: "2021-08-10T12:06:22.814096183Z"
-    description: |-
-      A Helm chart example.
-      Documentation
-      For additional details regarding  install parameters check Helm Chart documentation at https://github.com/durgeshsingh2065/helm-repo
-      License
-      By installing this product you accept the following license terms: https://github.com/durgeshsingh2065/helm-repo
-    digest: 0bc761b6cfedba61f2d9e0cdea57529fde513186fba8e7cb389431a58c5def54
+    created: "2021-08-16T08:17:42.489332074Z"
+    description: 'A Helm chart example. Documentation For additional details regarding
+      install parameters check Helm Chart documentation at https://github.com/durgeshsingh2065/helm-repo
+      License By installing this product you accept the following license terms: https://github.com/durgeshsingh2065/helm-repo'
+    digest: 1f7389b5bc4628439c7e4fd59f889a07a773d87dec15ec51760afaf2901eea1e
     home: https://github.com/durgeshsingh2065/helm-repo
     icon: https://durgeshsingh2065github.io/helm-chart/test.png
     keywords:
@@ -25,4 +22,4 @@ entries:
     urls:
     - https://durgeshsingh2065.github.io/helm-repo/helm-chart-test-2.0.8.tgz
     version: 2.0.8
-generated: "2021-08-10T12:06:22.81334582Z"
+generated: "2021-08-16T08:17:42.487989311Z"
