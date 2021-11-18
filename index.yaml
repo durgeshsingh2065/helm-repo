@@ -30,6 +30,6 @@ entries:
     name: ibm-ssp-engine
     type: application
     urls:
-    - https://github.com/durgeshsingh2065/helm-repo/charts/ibm-ssp-engine-1.2.1.tgz
+    - https://github.com/durgeshsingh2065/helm-repo/tree/mainaa/charts/ibm-ssp-engine-1.2.1.tgz
     version: 1.2.1
 generated: "2021-11-18T04:07:29.457520648-06:00"
