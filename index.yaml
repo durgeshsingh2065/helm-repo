@@ -3,7 +3,7 @@ entries:
   ibm-ssp-engine:
   - apiVersion: v2
     appVersion: 6.0.3.0
-    created: "2021-11-18T04:07:29.464116214-06:00"
+    created: "2021-11-18T05:03:48.556390782-06:00"
     dependencies:
     - alias: sch
       name: ibm-sch
@@ -30,6 +30,6 @@ entries:
     name: ibm-ssp-engine
     type: application
     urls:
-    - https://github.com/durgeshsingh2065/helm-repo/charts/ibm-ssp-engine-1.2.1.tgz
+    - https://durgeshsingh2065.github.io/helm-repo/charts/ibm-ssp-engine-1.2.1.tgz
     version: 1.2.1
-generated: "2021-11-18T04:07:29.457520648-06:00"
+generated: "2021-11-18T05:03:48.549721045-06:00"
